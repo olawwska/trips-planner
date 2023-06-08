@@ -12,31 +12,35 @@ import NoPlacesPage from '../molecules/NoPlacesPage';
 // API
 import useAttractions from '../useAttractions';
 import useCities from '../useCities';
+import useCoordinates from 'useCoordinates';
 // styles
 import useStyles from './useStyles';
 
 const AttractionsList: FC = () => {
   const classes = useStyles();
-  const { isLoaded } = useLoadScript({
-    // @ts-ignore
-    googleMapsApiKey: process.env.REACT_APP_API_KEY,
-  });
-  const center = useMemo(
-    () => ({
-      lat: 40.73061,
-      lng: -73.935242,
-    }),
-    []
-  );
-  const [inputVal, setInputVal] = useState('');
   const { cityId } = useParams();
+  const { isLoaded } = useLoadScript({
+    googleMapsApiKey: process.env.REACT_APP_API_KEY ?? '',
+  });
+  const [inputVal, setInputVal] = useState('');
 
   const { useGetAllAttractions, deleteAttraction, addAttraction } = useAttractions();
-
   const attractions = useGetAllAttractions(cityId);
-  const { cities } = useCities();
 
-  const titleText = cityId && cities && cities.find((c) => c.id === parseInt(cityId)).city;
+  const { useGetCityById } = useCities();
+  const selectedCity = useGetCityById(cityId);
+
+  const { useGetCityCoordinates } = useCoordinates();
+  const { coordinates } = useGetCityCoordinates(selectedCity?.city);
+  const { lat, lng } = coordinates?.results[0].geometry?.location || {};
+
+  const center = useMemo(
+    () => ({
+      lat: lat,
+      lng: lng,
+    }),
+    [lat, lng]
+  );
 
   const handleDeleteAttraction = (id: string) => {
     deleteAttraction(id);
@@ -53,7 +57,7 @@ const AttractionsList: FC = () => {
       <Grid item xs={6} style={{ height: '100vh', marginTop: '10%', padding: '0 5%' }}>
         {Boolean(attractions?.length) ? (
           <>
-            <ListTitle title={`${titleText} attractions list`} />
+            <ListTitle title={`${selectedCity?.city} attractions list`} />
             <ListPlaces places={attractions} onHandleDelete={handleDeleteAttraction} />
             <Grid item xs={12}>
               <TextFieldPlace

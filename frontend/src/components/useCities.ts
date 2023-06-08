@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
+import { CityType } from './types';
 
 const useCities = () => {
   const queryClient = useQueryClient();
@@ -46,11 +47,24 @@ const useCities = () => {
     },
   });
 
+  const getCityById = async (cityId: string) => {
+    const { data } = await axios.get(`http://localhost:8000/getCityById/${cityId}`);
+    return data;
+  };
+
+  const useGetCityById = (cityId: string = ''): CityType => {
+    const { data } = useQuery(['city', cityId], () => getCityById(cityId), {
+      enabled: Boolean(cityId),
+    });
+    return data;
+  };
+
   return {
     cities,
     areCitiesLoading: isLoading,
     createCity,
     deleteCity,
+    useGetCityById,
   };
 };
 

@@ -8,6 +8,7 @@ const {
   handleAddAttraction,
   handleGetAttractionsForCity,
   handleDeleteAttraction,
+  handleGetCityById,
 } = require('./databaseHandlers');
 
 let app = express();
@@ -48,6 +49,11 @@ app.delete('/deleteCity/:id', async (req, res) => {
 
 app.delete('/deleteAttraction/:id', async (req, res) => {
   const result = await handleDeleteAttraction(req);
+  res.send(result);
+});
+
+app.get('/getCityById/:cityId', async (req, res) => {
+  const result = await handleGetCityById(req);
   res.send(result);
 });
 

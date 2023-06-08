@@ -141,6 +141,19 @@ const handleDeleteAttraction = (req) => {
   });
 };
 
+const handleGetCityById = (req) => {
+  const cityId = req.params.cityId;
+  return new Promise((resolve, reject) => {
+    db.each(`SELECT city,id FROM cities WHERE id = '${cityId}'`, (err, row) => {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+      return resolve(row);
+    });
+  });
+};
+
 module.exports = {
   handleGetAllCities,
   handleAddCity,
@@ -148,4 +161,5 @@ module.exports = {
   handleAddAttraction,
   handleGetAttractionsForCity,
   handleDeleteAttraction,
+  handleGetCityById,
 };
