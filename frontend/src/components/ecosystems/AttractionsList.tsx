@@ -1,14 +1,12 @@
 import { FC, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
-import { useLoadScript, GoogleMap } from '@react-google-maps/api';
+import { useLoadScript, GoogleMap, Autocomplete, Marker } from '@react-google-maps/api';
 // components
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 // subcomponents
 import TextFieldPlace from '../atoms/TextFieldPlace';
-import ButtonSubmitPlace from '../atoms/ButtonSubmitPlace';
 import ListTitle from '../atoms/ListTitle';
 import ListPlaces from '../molecules/ListPlaces';
-import NoPlacesPage from '../molecules/NoPlacesPage';
 // API
 import useAttractions from '../useAttractions';
 import useCities from '../useCities';
@@ -16,11 +14,14 @@ import useCoordinates from 'useCoordinates';
 // styles
 import useStyles from './useStyles';
 
+const placesLibrary: 'places'[] = ['places'];
+
 const AttractionsList: FC = () => {
   const classes = useStyles();
   const { cityId } = useParams();
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY ?? '',
+    libraries: placesLibrary,
   });
   const [inputVal, setInputVal] = useState('');
 
@@ -46,45 +47,68 @@ const AttractionsList: FC = () => {
     deleteAttraction(id);
   };
 
-  const handleAddAttraction = () => {
-    const attraction = { attraction: inputVal, cityId: cityId ?? '' };
+  const handleAddAttraction = (placeCoordinates) => {
+    const attraction = {
+      attraction: placeCoordinates.name,
+      cityId: cityId ?? '',
+      lat: placeCoordinates.lat,
+      lng: placeCoordinates.lng,
+    };
     addAttraction(attraction);
     setInputVal('');
+  };
+
+  const [searchResult, setSearchResult] = useState<any>('');
+
+  const onLoad = (autocomplete) => {
+    setSearchResult(autocomplete);
+  };
+
+  const onPlaceChanged = () => {
+    if (searchResult) {
+      const place = searchResult.getPlace();
+      const placeCoordinates = {
+        name: place.name,
+        lat: place.geometry?.location?.lat(),
+        lng: place.geometry?.location?.lng(),
+      };
+      handleAddAttraction(placeCoordinates);
+    }
   };
 
   return (
     <Grid container>
       <Grid item xs={6} style={{ height: '100vh', marginTop: '10%', padding: '0 5%' }}>
+        <ListTitle title={`${selectedCity?.city} attractions list`} />
         {Boolean(attractions?.length) ? (
-          <>
-            <ListTitle title={`${selectedCity?.city} attractions list`} />
-            <ListPlaces places={attractions} onHandleDelete={handleDeleteAttraction} />
-            <Grid item xs={12}>
-              <TextFieldPlace
-                label={'Type an attraction'}
-                setInputVal={setInputVal}
-                inputVal={inputVal}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <ButtonSubmitPlace handleSubmit={handleAddAttraction} text={'Add an attraction'} />
-            </Grid>
-          </>
+          <ListPlaces places={attractions} onHandleDelete={handleDeleteAttraction} />
         ) : (
-          <NoPlacesPage
-            inputVal={inputVal}
-            setInputVal={setInputVal}
-            label={'Add attraction'}
-            title={'There are no attractions added to this city yet'}
-            onHandleSubmit={handleAddAttraction}
-          />
+          <>
+            <Typography variant="h2" align="center">
+              There are no attractions added to this city yet
+            </Typography>
+            <Typography variant="h5" align="center" sx={{ marginTop: '2%' }}>
+              Click below if you want to add one
+            </Typography>
+          </>
         )}
       </Grid>
       <Grid item xs={6} style={{ height: '100vh' }}>
         {!isLoaded ? (
           <>isLoading</>
         ) : (
-          <GoogleMap mapContainerClassName={classes.map} center={center} zoom={10}></GoogleMap>
+          <GoogleMap mapContainerClassName={classes.map} center={center} zoom={10}>
+            <Autocomplete
+              onLoad={onLoad}
+              //@ts-ignore
+              onPlaceChanged={(place) => onPlaceChanged(place)}
+            >
+              <TextFieldPlace setInputVal={setInputVal} inputVal={inputVal} />
+            </Autocomplete>
+            {attractions?.map((m) => (
+              <Marker position={{ lat: m.lat, lng: m.lng }} />
+            ))}
+          </GoogleMap>
         )}
       </Grid>
     </Grid>

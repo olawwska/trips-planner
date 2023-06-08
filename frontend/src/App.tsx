@@ -63,6 +63,7 @@ const theme = createTheme({
     MuiTextField: {
       styleOverrides: {
         root: {
+          backgroundColor: 'white',
           '& label.Mui-focused': {
             color: 'rgb(242,141,235)',
           },

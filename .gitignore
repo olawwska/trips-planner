@@ -24,3 +24,5 @@ yarn-debug.log*
 yarn-error.log*
 node_modules
 /backend/testdb.db
+
+/frontend/.env

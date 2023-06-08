@@ -16,4 +16,6 @@ export interface AttractionType {
   attraction: string;
   id?: string;
   cityId: string;
+  lat: number;
+  lng: number;
 }

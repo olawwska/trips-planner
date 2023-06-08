@@ -20,7 +20,7 @@ db.serialize(() => {
 
 db.serialize(() => {
   db.run(
-    'CREATE TABLE IF NOT EXISTS attractions(id integer primary key, attraction text, cityId integer)',
+    'CREATE TABLE IF NOT EXISTS attractions(id integer primary key, attraction text, cityId integer, lat real, lng real)',
     (err) => {
       if (err) {
         console.log(err);
@@ -29,8 +29,6 @@ db.serialize(() => {
     }
   );
 });
-
-// db.run('DROP TABLE * IF EXISTS');
 
 const handleGetAllCities = () => {
   let cities = [];
@@ -60,13 +58,13 @@ const handleGetAttractionsForCity = (req) => {
   const cityId = req.params.cityId;
   return new Promise((resolve, reject) => {
     db.each(
-      `SELECT id,attraction FROM attractions WHERE cityId = '${cityId}'`,
+      `SELECT id,attraction,lat,lng FROM attractions WHERE cityId = '${cityId}'`,
       (err, row) => {
         if (err) {
           console.log(err);
           return reject(err.attraction);
         }
-        attractions.push({ attraction: row.attraction, id: row.id });
+        attractions.push({ attraction: row.attraction, id: row.id, lat: row.lat, lng: row.lng });
       },
       (err) => {
         if (err) {
@@ -93,10 +91,10 @@ const handleAddCity = (req) => {
 };
 
 const handleAddAttraction = (req) => {
-  const { attraction, cityId } = req.body;
+  const { attraction, cityId, lat, lng } = req.body;
   return new Promise((resolve, reject) => {
     db.run(
-      `INSERT INTO attractions(attraction,cityId) VALUES('${attraction}','${cityId}')`,
+      `INSERT INTO attractions(attraction,cityId,lat,lng) VALUES('${attraction}','${cityId}','${lat}','${lng}')`,
       (err, res) => {
         if (err) {
           console.log(err);
