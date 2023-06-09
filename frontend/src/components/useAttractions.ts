@@ -10,11 +10,14 @@ const useAttractions = () => {
     return data;
   };
 
-  const useGetAllAttractions = (cityId: string = ''): AttractionType[] => {
-    const { data } = useQuery(['attractions', cityId], () => getAllAttractions(cityId), {
+  const useGetAllAttractions = (cityId: string = ''): any => {
+    const { data, isLoading } = useQuery(['attractions', cityId], () => getAllAttractions(cityId), {
       enabled: Boolean(cityId),
     });
-    return data;
+    return {
+      data,
+      isLoading,
+    };
   };
 
   const useDeleteAttraction = async (id: string) => {

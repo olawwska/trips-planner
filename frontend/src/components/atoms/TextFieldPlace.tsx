@@ -10,6 +10,7 @@ const TextFieldPlace: FC<{
 }> = ({ label, inputVal, setInputVal }) => {
   return (
     <TextField
+      sx={{ width: '60%', marginLeft: '30%', top: '-12px' }}
       label={label}
       value={inputVal}
       InputProps={{
