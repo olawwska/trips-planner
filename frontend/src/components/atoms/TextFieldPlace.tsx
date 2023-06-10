@@ -7,10 +7,11 @@ const TextFieldPlace: FC<{
   label?: string;
   inputVal: string;
   setInputVal: (val: string) => void;
-}> = ({ label, inputVal, setInputVal }) => {
+  mapTextField?: boolean;
+}> = ({ label, inputVal, setInputVal, mapTextField }) => {
   return (
     <TextField
-      sx={{ width: '60%', marginLeft: '30%', top: '-12px' }}
+      sx={mapTextField ? { width: '60%', marginLeft: '30%', top: '-12px' } : {}}
       label={label}
       value={inputVal}
       InputProps={{

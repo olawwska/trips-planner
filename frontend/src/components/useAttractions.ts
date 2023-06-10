@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
-import { AttractionType } from './types';
+import { IAttractionPayload } from './types';
 
 const useAttractions = () => {
   const queryClient = useQueryClient();
@@ -37,7 +37,7 @@ const useAttractions = () => {
     },
   });
 
-  const useAddAttraction = async (attraction: AttractionType) => {
+  const useAddAttraction = async (attraction: IAttractionPayload) => {
     const { data } = await axios.post(`http://localhost:8000/addAttraction`, attraction);
     return data;
   };

@@ -6,7 +6,7 @@ import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 // subcomponents
 import ListTitle from '../atoms/ListTitle';
 import ListPlaces from '../molecules/ListPlaces';
-import MapComponent from './MapComponent';
+import MapComponent from './MapComponent/MapComponent';
 // API
 import useAttractions from '../useAttractions';
 import useCities from '../useCities';
