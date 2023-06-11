@@ -17,9 +17,11 @@ import TextFieldPlace from '../../atoms/TextFieldPlace';
 import useCoordinates from 'components/useCoordinates';
 import useAttractions from '../../useAttractions';
 // types
-import { CityType, IPlaceType, IAttractionType, IInfoWindowDataType } from 'components/types';
+import { CityType, IPlaceType, IAttractionType } from 'components/types';
 // styles
 import useStyles from '../useStyles';
+// context
+import useContext from '../context';
 
 const placesLibrary: 'places'[] = ['places'];
 
@@ -28,6 +30,8 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
   attractions,
 }) => {
   const classes = useStyles();
+  const { state: infoWindowData, dispatch } = useContext();
+
   const { cityId = '' } = useParams();
   const [inputVal, setInputVal] = useState('');
   const [markers, setMarkers] = useState<IAttractionType[]>([]);
@@ -100,13 +104,17 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
   };
 
   const [mapRef, setMapRef] = useState<any>();
-  const [isOpen, setIsOpen] = useState(false);
-  const [infoWindowData, setInfoWindowData] = useState<IInfoWindowDataType>();
 
   const handleMarkerClick = ({ id, lat, lng, photo, rating, website }: IAttractionType) => {
     mapRef?.panTo({ lat, lng });
-    setInfoWindowData({ id, photo, rating, website });
-    setIsOpen(true);
+    dispatch({
+      type: 'CHANGE_ALL_ATTRACTION_INFO',
+      id: id,
+      photo: photo,
+      rating: rating,
+      website: website,
+      isOpen: true,
+    });
   };
 
   return (
@@ -130,10 +138,10 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
                 handleMarkerClick({ id, lat, lng, photo, rating, website });
               }}
             >
-              {isOpen && infoWindowData?.id === id && (
+              {infoWindowData.isOpen && infoWindowData?.id === id && (
                 <InfoWindowF
                   onCloseClick={() => {
-                    setIsOpen(false);
+                    dispatch({ type: 'CLOSE_INFO_WINDOW' });
                   }}
                 >
                   <MapInfoWindow infoWindowData={infoWindowData} />

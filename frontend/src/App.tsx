@@ -2,6 +2,7 @@ import { FC } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { ThemeProvider, createTheme } from '@mui/material';
+import { MapInfoWindowProvider } from 'components/ecosystems/context';
 // components
 import AttractionsPage from './components/ecosystems/AttractionsPage/AttractionsPage';
 import CitiesPage from './components/ecosystems/CitiesPage/CitiesPage';
@@ -95,14 +96,16 @@ const App: FC = () => {
 
   return (
     <ThemeProvider theme={theme}>
-      <QueryClientProvider client={queryClient}>
-        <Router>
-          <Routes>
-            <Route path="/" element={<CitiesPage />} />
-            <Route path="attractions/:cityId" element={<AttractionsPage />} />
-          </Routes>
-        </Router>
-      </QueryClientProvider>
+      <MapInfoWindowProvider>
+        <QueryClientProvider client={queryClient}>
+          <Router>
+            <Routes>
+              <Route path="/" element={<CitiesPage />} />
+              <Route path="attractions/:cityId" element={<AttractionsPage />} />
+            </Routes>
+          </Router>
+        </QueryClientProvider>
+      </MapInfoWindowProvider>
     </ThemeProvider>
   );
 };

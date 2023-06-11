@@ -13,6 +13,7 @@ const PlaceListItem: FC<PlaceListItemType> = ({
   name,
   onHandleFocus,
   onHandleClick,
+  onHandleMouseOut,
 }) => {
   return (
     <ListItem
@@ -34,6 +35,11 @@ const PlaceListItem: FC<PlaceListItemType> = ({
         onMouseEnter={() => {
           if (onHandleFocus) {
             onHandleFocus();
+          }
+        }}
+        onMouseLeave={() => {
+          if (onHandleMouseOut) {
+            onHandleMouseOut();
           }
         }}
         onClick={() => {

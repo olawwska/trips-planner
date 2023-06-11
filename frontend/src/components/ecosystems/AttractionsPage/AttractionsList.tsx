@@ -5,11 +5,15 @@ import { Grid, Paper, List } from '@mui/material';
 import PlaceListItem from '../../atoms/PlaceListItem';
 //types
 import { IAttractionType } from 'components/types';
+// context
+import useContext from '../context';
 
 const AttractionsList: FC<{
   attractions: IAttractionType[];
   onHandleDelete: (id: number) => void;
 }> = ({ attractions, onHandleDelete }) => {
+  const { dispatch } = useContext();
+
   return (
     <Grid item xs={112}>
       <Paper
@@ -23,8 +27,26 @@ const AttractionsList: FC<{
         variant="outlined"
       >
         <List>
-          {attractions?.map(({ id, attraction }) => (
-            <PlaceListItem key={id} id={id} onDelete={onHandleDelete} name={attraction || ''} />
+          {attractions?.map(({ id, attraction, photo, website, rating }) => (
+            <PlaceListItem
+              key={id}
+              id={id}
+              onDelete={onHandleDelete}
+              name={attraction || ''}
+              onHandleFocus={() => {
+                dispatch({
+                  type: 'CHANGE_ALL_ATTRACTION_INFO',
+                  id: id,
+                  photo: photo,
+                  website: website,
+                  rating: rating,
+                  isOpen: true,
+                });
+              }}
+              onHandleMouseOut={() => {
+                dispatch({ type: 'CLOSE_INFO_WINDOW' });
+              }}
+            />
           ))}
         </List>
       </Paper>
