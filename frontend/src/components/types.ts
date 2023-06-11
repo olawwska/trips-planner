@@ -19,7 +19,7 @@ interface Coordinates {
 
 interface PlaceInfo {
   photo: string;
-  rating: number;
+  attraction: string;
   website: string;
 }
 
@@ -28,7 +28,7 @@ export interface IPlaceType extends Coordinates, PlaceInfo {
 }
 
 export interface IAttractionPayloadType extends Coordinates, PlaceInfo {
-  attraction?: string;
+  attraction: string;
   cityId?: number;
 }
 
@@ -48,7 +48,7 @@ export type InfoWindowActionsType =
   | {
       type: 'CHANGE_ATTRACTION_INFO';
       photo: string;
-      rating: number;
+      attraction: string;
       website: string;
     }
   | {
@@ -57,7 +57,7 @@ export type InfoWindowActionsType =
       lat: number;
       lng: number;
       photo: string;
-      rating: number;
+      attraction: string;
       website: string;
       isOpen: boolean;
     }

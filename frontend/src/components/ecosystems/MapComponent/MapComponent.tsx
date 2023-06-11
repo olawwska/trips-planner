@@ -1,4 +1,4 @@
-import { FC, useState, useMemo, useEffect } from 'react';
+import { FC, useState, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   useLoadScript,
@@ -7,7 +7,6 @@ import {
   MarkerF,
   InfoWindowF,
 } from '@react-google-maps/api';
-import { debounce } from 'lodash';
 // components
 import { Grid } from '@mui/material';
 // subcomponents
@@ -31,10 +30,8 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
 }) => {
   const classes = useStyles();
   const { state: infoWindowData, dispatch } = useContext();
-
   const { cityId = '' } = useParams();
   const [inputVal, setInputVal] = useState('');
-  const [markers, setMarkers] = useState<IAttractionType[]>([]);
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY ?? '',
@@ -62,7 +59,6 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
       lat: placeInfo.lat,
       lng: placeInfo.lng,
       photo: placeInfo?.photo,
-      rating: placeInfo?.rating,
       website: placeInfo?.website,
     };
     addAttraction(attraction);
@@ -77,10 +73,6 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
 
   const onLoadMap = (map) => {
     setMapRef(map);
-    debounce(() => {
-      setMarkers(attractions);
-    }, 20)();
-
     if (attractions?.length) {
       const bounds = new google.maps.LatLngBounds();
       attractions.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
@@ -96,7 +88,7 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
         lat: place.geometry?.location?.lat(),
         lng: place.geometry?.location?.lng(),
         photo: place.photos[0]?.getUrl(),
-        rating: place.rating,
+        attraction: place.attraction,
         website: place.website,
       };
       handleAddAttraction(placeInfo);
@@ -105,23 +97,19 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
 
   const [mapRef, setMapRef] = useState<any>();
 
-  const handleMarkerClick = ({ id, lat, lng, photo, rating, website }: IAttractionType) => {
+  const handleMarkerClick = ({ id, lat, lng, photo, attraction, website }: IAttractionType) => {
+    mapRef?.panTo({ lat, lng });
     dispatch({
       type: 'CHANGE_ALL_ATTRACTION_INFO',
       id: id,
       lat: lat,
       lng: lng,
       photo: photo,
-      rating: rating,
+      attraction: attraction,
       website: website,
       isOpen: true,
     });
   };
-
-  useEffect(() => {
-    const { lat, lng } = infoWindowData;
-    mapRef?.panTo({ lat, lng });
-  }, [infoWindowData, mapRef]);
 
   return (
     <Grid item xs={6} style={{ height: '100vh' }}>
@@ -136,12 +124,12 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
           >
             <TextFieldPlace setInputVal={setInputVal} inputVal={inputVal} mapTextField />
           </Autocomplete>
-          {markers.map(({ lat, lng, id, photo, rating, website }) => (
+          {attractions.map(({ lat, lng, id, photo, attraction, website }) => (
             <MarkerF
               key={id}
-              position={{ lat, lng }}
+              position={{ lat: lat, lng: lng }}
               onClick={() => {
-                handleMarkerClick({ id, lat, lng, photo, rating, website });
+                handleMarkerClick({ id, lat, lng, photo, attraction, website });
               }}
             >
               {infoWindowData.isOpen && infoWindowData?.id === id && (
@@ -149,6 +137,7 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
                   onCloseClick={() => {
                     dispatch({ type: 'CLOSE_INFO_WINDOW' });
                   }}
+                  position={{ lat: lat, lng: lng }}
                 >
                   <MapInfoWindow infoWindowData={infoWindowData} />
                 </InfoWindowF>

@@ -27,7 +27,7 @@ const AttractionsList: FC<{
         variant="outlined"
       >
         <List>
-          {attractions?.map(({ id, attraction, lat, lng, photo, website, rating }) => (
+          {attractions?.map(({ id, attraction, lat, lng, photo, website }) => (
             <PlaceListItem
               key={id}
               id={id}
@@ -41,7 +41,7 @@ const AttractionsList: FC<{
                   lng: lng,
                   photo: photo,
                   website: website,
-                  rating: rating,
+                  attraction: attraction,
                   isOpen: true,
                 });
               }}

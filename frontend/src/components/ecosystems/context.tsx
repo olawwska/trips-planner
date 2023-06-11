@@ -9,9 +9,9 @@ export const StateContext = createContext<IInfoWindowStateType | undefined>(unde
 const DispatchContext = createContext<Dispatch | undefined>(undefined);
 
 export const initialState: IInfoWindowStateType = {
+  attraction: '',
   id: 0,
   photo: '',
-  rating: 0,
   website: '',
   isOpen: false,
   lat: 0,

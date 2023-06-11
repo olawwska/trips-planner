@@ -6,7 +6,12 @@ const reducer = (state: IInfoWindowStateType, action: InfoWindowActionsType) => 
     case 'CHANGE_ATTRACTION_ID':
       return { ...state, id: action.id };
     case 'CHANGE_ATTRACTION_INFO':
-      return { ...state, photo: action.photo, website: action.website, rating: action.rating };
+      return {
+        ...state,
+        photo: action.photo,
+        website: action.website,
+        attraction: action.attraction,
+      };
     case 'CHANGE_ALL_ATTRACTION_INFO':
       return {
         id: action.id,
@@ -14,7 +19,7 @@ const reducer = (state: IInfoWindowStateType, action: InfoWindowActionsType) => 
         lng: action.lng,
         photo: action.photo,
         website: action.website,
-        rating: action.rating,
+        attraction: action.attraction,
         isOpen: action.isOpen,
       };
 
@@ -24,7 +29,7 @@ const reducer = (state: IInfoWindowStateType, action: InfoWindowActionsType) => 
         id: initialState.id,
         photo: initialState.photo,
         website: initialState.website,
-        rating: initialState.rating,
+        attraction: initialState.attraction,
         isOpen: initialState.isOpen,
       };
     default:
