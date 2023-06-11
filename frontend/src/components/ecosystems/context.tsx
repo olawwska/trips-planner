@@ -9,11 +9,13 @@ export const StateContext = createContext<IInfoWindowStateType | undefined>(unde
 const DispatchContext = createContext<Dispatch | undefined>(undefined);
 
 export const initialState: IInfoWindowStateType = {
+  id: 0,
   photo: '',
   rating: 0,
   website: '',
-  id: 0,
   isOpen: false,
+  lat: 0,
+  lng: 0,
 };
 
 export const MapInfoWindowProvider: FC<any> = ({ children }) => {

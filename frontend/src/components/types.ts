@@ -54,6 +54,8 @@ export type InfoWindowActionsType =
   | {
       type: 'CHANGE_ALL_ATTRACTION_INFO';
       id: number;
+      lat: number;
+      lng: number;
       photo: string;
       rating: number;
       website: string;
@@ -63,6 +65,6 @@ export type InfoWindowActionsType =
       type: 'CLOSE_INFO_WINDOW';
     };
 
-export interface IInfoWindowStateType extends IInfoWindowDataType {
+export interface IInfoWindowStateType extends IInfoWindowDataType, Coordinates {
   isOpen: boolean;
 }

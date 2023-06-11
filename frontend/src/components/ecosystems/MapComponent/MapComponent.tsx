@@ -1,4 +1,4 @@
-import { FC, useState, useMemo } from 'react';
+import { FC, useState, useMemo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   useLoadScript,
@@ -106,16 +106,22 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
   const [mapRef, setMapRef] = useState<any>();
 
   const handleMarkerClick = ({ id, lat, lng, photo, rating, website }: IAttractionType) => {
-    mapRef?.panTo({ lat, lng });
     dispatch({
       type: 'CHANGE_ALL_ATTRACTION_INFO',
       id: id,
+      lat: lat,
+      lng: lng,
       photo: photo,
       rating: rating,
       website: website,
       isOpen: true,
     });
   };
+
+  useEffect(() => {
+    const { lat, lng } = infoWindowData;
+    mapRef?.panTo({ lat, lng });
+  }, [infoWindowData, mapRef]);
 
   return (
     <Grid item xs={6} style={{ height: '100vh' }}>
