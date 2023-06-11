@@ -4,14 +4,14 @@ import { useParams } from 'react-router-dom';
 import { Grid, Typography } from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 // subcomponents
-import ListTitle from '../atoms/ListTitle';
-import ListPlaces from '../molecules/ListPlaces';
-import MapComponent from './MapComponent/MapComponent';
+import ListTitle from '../../atoms/ListTitle';
+import AttractionsList from './AttractionsList';
+import MapComponent from '../MapComponent/MapComponent';
 // API
-import useAttractions from '../useAttractions';
-import useCities from '../useCities';
+import useAttractions from '../../useAttractions';
+import useCities from '../../useCities';
 
-const AttractionsList: FC = () => {
+const AttractionsPage: FC = () => {
   const { cityId } = useParams();
   const { useGetAllAttractions, deleteAttraction } = useAttractions();
   const { data: attractions, isLoading: areAttractionsLoading } = useGetAllAttractions(cityId);
@@ -19,7 +19,7 @@ const AttractionsList: FC = () => {
   const { useGetCityById } = useCities();
   const selectedCity = useGetCityById(cityId);
 
-  const handleDeleteAttraction = (id: string) => {
+  const handleDeleteAttraction = (id: number) => {
     deleteAttraction(id);
   };
 
@@ -35,7 +35,7 @@ const AttractionsList: FC = () => {
       >
         <ListTitle title={`${selectedCity?.city} attractions list`} />
         {Boolean(attractions?.length) ? (
-          <ListPlaces places={attractions} onHandleDelete={handleDeleteAttraction} />
+          <AttractionsList attractions={attractions} onHandleDelete={handleDeleteAttraction} />
         ) : (
           <>
             <Typography variant="h2" align="center" sx={{ margin: '10% 0' }}>
@@ -61,4 +61,4 @@ const AttractionsList: FC = () => {
   );
 };
 
-export default AttractionsList;
+export default AttractionsPage;

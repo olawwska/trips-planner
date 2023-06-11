@@ -1,39 +1,40 @@
 export interface CityType {
   city: string;
-  id: string;
+  id: number;
 }
 
 export type PlaceListItemType = {
-  id: string;
-  onDelete: (id: string) => void;
-  place: {
-    type?: string;
-    name: string;
-  };
+  id: number;
+  onDelete: (id: number) => void;
+  name: string;
+  onHandleFocus?: () => void;
+  onHandleClick?: (id: number) => void;
 };
 
-export interface IAttractionPayload {
-  attraction: string;
-  cityId: string;
+interface Coordinates {
   lat: number;
   lng: number;
+}
+
+interface PlaceInfo {
   photo: string;
   rating: number;
   website: string;
 }
 
-export interface IAttractionType extends IAttractionPayload {
+export interface IPlaceType extends Coordinates, PlaceInfo {
+  name: string;
+}
+
+export interface IAttractionPayloadType extends Coordinates, PlaceInfo {
+  attraction?: string;
+  cityId?: number;
+}
+
+export interface IAttractionType extends IAttractionPayloadType {
   id: number;
 }
 
-export interface IInfoWindowDataType {
+export interface IInfoWindowDataType extends PlaceInfo {
   id: number;
-  photo: string;
-  rating: number;
-  website: string;
-}
-
-export interface IMarkerType extends IInfoWindowDataType {
-  lat: number;
-  lng: number;
 }

@@ -1,5 +1,4 @@
 import { FC } from 'react';
-import { useNavigate } from 'react-router-dom';
 // components
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 // icons
@@ -8,35 +7,42 @@ import IconButton from '@mui/material/IconButton';
 // types
 import { PlaceListItemType } from '../types';
 
-const PlaceListItem: FC<PlaceListItemType> = ({ id, onDelete, place }) => {
-  const navigate = useNavigate();
-
+const PlaceListItem: FC<PlaceListItemType> = ({
+  id,
+  onDelete,
+  name,
+  onHandleFocus,
+  onHandleClick,
+}) => {
   return (
     <ListItem
       disablePadding
       secondaryAction={
-        <>
-          <IconButton
-            size="large"
-            edge="end"
-            aria-label="delete"
-            onClick={() => {
-              onDelete(id);
-            }}
-          >
-            <DeleteIcon />
-          </IconButton>
-        </>
+        <IconButton
+          size="large"
+          edge="end"
+          aria-label="delete"
+          onClick={() => {
+            onDelete(id);
+          }}
+        >
+          <DeleteIcon />
+        </IconButton>
       }
     >
       <ListItemButton
+        onMouseEnter={() => {
+          if (onHandleFocus) {
+            onHandleFocus();
+          }
+        }}
         onClick={() => {
-          if (place.type === 'city') {
-            return navigate(`/attractions/${id}`);
+          if (onHandleClick) {
+            onHandleClick(id);
           }
         }}
       >
-        <ListItemText primary={place.name} />
+        <ListItemText primary={name} />
       </ListItemButton>
     </ListItem>
   );

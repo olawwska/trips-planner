@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
-import { IAttractionPayload } from './types';
+import { IAttractionPayloadType } from './types';
 
 const useAttractions = () => {
   const queryClient = useQueryClient();
@@ -10,7 +10,7 @@ const useAttractions = () => {
     return data;
   };
 
-  const useGetAllAttractions = (cityId: string = ''): any => {
+  const useGetAllAttractions = (cityId: string = '') => {
     const { data, isLoading } = useQuery(['attractions', cityId], () => getAllAttractions(cityId), {
       enabled: Boolean(cityId),
     });
@@ -20,7 +20,7 @@ const useAttractions = () => {
     };
   };
 
-  const useDeleteAttraction = async (id: string) => {
+  const useDeleteAttraction = async (id: number) => {
     const { data } = await axios.delete(`http://localhost:8000/deleteAttraction/${id}`);
     return data;
   };
@@ -37,7 +37,7 @@ const useAttractions = () => {
     },
   });
 
-  const useAddAttraction = async (attraction: IAttractionPayload) => {
+  const useAddAttraction = async (attraction: IAttractionPayloadType) => {
     const { data } = await axios.post(`http://localhost:8000/addAttraction`, attraction);
     return data;
   };

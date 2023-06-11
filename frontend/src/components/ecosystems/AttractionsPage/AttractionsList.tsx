@@ -2,12 +2,14 @@ import { FC } from 'react';
 // components
 import { Grid, Paper, List } from '@mui/material';
 // subcomponents
-import PlaceListItem from '../atoms/PlaceListItem';
+import PlaceListItem from '../../atoms/PlaceListItem';
+//types
+import { IAttractionType } from 'components/types';
 
-const ListPlaces: FC<{
-  places: any[];
-  onHandleDelete: (id: string) => void;
-}> = ({ places, onHandleDelete }) => {
+const AttractionsList: FC<{
+  attractions: IAttractionType[];
+  onHandleDelete: (id: number) => void;
+}> = ({ attractions, onHandleDelete }) => {
   return (
     <Grid item xs={112}>
       <Paper
@@ -21,17 +23,12 @@ const ListPlaces: FC<{
         variant="outlined"
       >
         <List>
-          {places?.map((p) => (
-            <PlaceListItem
-              key={p.id}
-              id={p.id}
-              onDelete={onHandleDelete}
-              place={{ type: p.city ? 'city' : undefined, name: p.city ?? p.attraction }}
-            />
+          {attractions?.map(({ id, attraction }) => (
+            <PlaceListItem key={id} id={id} onDelete={onHandleDelete} name={attraction || ''} />
           ))}
         </List>
       </Paper>
     </Grid>
   );
 };
-export default ListPlaces;
+export default AttractionsList;

@@ -29,7 +29,7 @@ const useCities = () => {
     },
   });
 
-  const useDeleteCity = async (id: string) => {
+  const useDeleteCity = async (id: number) => {
     const { data } = await axios.delete(`http://localhost:8000/deleteCity/${id}`);
     return data;
   };

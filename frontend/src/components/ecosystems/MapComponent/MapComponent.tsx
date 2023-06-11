@@ -17,7 +17,7 @@ import TextFieldPlace from '../../atoms/TextFieldPlace';
 import useCoordinates from 'components/useCoordinates';
 import useAttractions from '../../useAttractions';
 // types
-import { CityType, IAttractionType, IMarkerType, IInfoWindowDataType } from 'components/types';
+import { CityType, IPlaceType, IAttractionType, IInfoWindowDataType } from 'components/types';
 // styles
 import useStyles from '../useStyles';
 
@@ -28,9 +28,9 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
   attractions,
 }) => {
   const classes = useStyles();
-  const { cityId } = useParams();
+  const { cityId = '' } = useParams();
   const [inputVal, setInputVal] = useState('');
-  const [markers, setMarkers] = useState<IMarkerType[]>([]);
+  const [markers, setMarkers] = useState<IAttractionType[]>([]);
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: process.env.REACT_APP_API_KEY ?? '',
@@ -51,15 +51,15 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
 
   const { addAttraction } = useAttractions();
 
-  const handleAddAttraction = (attractionInfo) => {
+  const handleAddAttraction = (placeInfo: IPlaceType) => {
     const attraction = {
-      attraction: attractionInfo.name,
-      cityId: cityId ?? '',
-      lat: attractionInfo.lat,
-      lng: attractionInfo.lng,
-      photo: attractionInfo?.photo,
-      rating: attractionInfo?.rating,
-      website: attractionInfo?.website,
+      attraction: placeInfo.name,
+      cityId: parseInt(cityId),
+      lat: placeInfo.lat,
+      lng: placeInfo.lng,
+      photo: placeInfo?.photo,
+      rating: placeInfo?.rating,
+      website: placeInfo?.website,
     };
     addAttraction(attraction);
     setInputVal('');
@@ -87,7 +87,7 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
   const onPlaceChanged = () => {
     if (searchResult) {
       const place = searchResult.getPlace();
-      const placeInfo = {
+      const placeInfo: IPlaceType = {
         name: place.name,
         lat: place.geometry?.location?.lat(),
         lng: place.geometry?.location?.lng(),
@@ -103,7 +103,7 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
   const [isOpen, setIsOpen] = useState(false);
   const [infoWindowData, setInfoWindowData] = useState<IInfoWindowDataType>();
 
-  const handleMarkerClick = ({ id, lat, lng, photo, rating, website }: IMarkerType) => {
+  const handleMarkerClick = ({ id, lat, lng, photo, rating, website }: IAttractionType) => {
     mapRef?.panTo({ lat, lng });
     setInfoWindowData({ id, photo, rating, website });
     setIsOpen(true);
