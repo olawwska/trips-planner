@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
-import { IAttractionPayloadType } from './types';
+import { IAttractionPayloadType, AttractionFormType } from './types';
 
 const useAttractions = () => {
   const queryClient = useQueryClient();
@@ -54,10 +54,31 @@ const useAttractions = () => {
     },
   });
 
+  const useEditAttraction = async ({ id, attraction }: AttractionFormType) => {
+    const { data } = await axios.put(`http://localhost:8000/editAttraction`, {
+      id: id,
+      attraction: attraction,
+    });
+    return data;
+  };
+
+  const { mutate: editAttraction } = useMutation(useEditAttraction, {
+    onSuccess: () => {
+      console.log('attraction edited');
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries('attractions');
+    },
+  });
+
   return {
     useGetAllAttractions,
     addAttraction,
     deleteAttraction,
+    editAttraction,
   };
 };
 

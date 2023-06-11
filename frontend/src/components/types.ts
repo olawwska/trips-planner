@@ -10,6 +10,8 @@ export type PlaceListItemType = {
   onHandleFocus?: () => void;
   onHandleClick?: (id: number) => void;
   onHandleMouseOut?: () => void;
+  setIsOpenDialog?: (isOpen: boolean) => void;
+  setAttractionForm?: (state: any) => void;
 };
 
 interface Coordinates {
@@ -68,3 +70,8 @@ export type InfoWindowActionsType =
 export interface IInfoWindowStateType extends IInfoWindowDataType, Coordinates {
   isOpen: boolean;
 }
+
+export type AttractionFormType = {
+  attraction: string;
+  id?: number;
+};

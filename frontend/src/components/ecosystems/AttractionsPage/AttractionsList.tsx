@@ -4,14 +4,16 @@ import { Grid, Paper, List } from '@mui/material';
 // subcomponents
 import PlaceListItem from '../../atoms/PlaceListItem';
 //types
-import { IAttractionType } from 'components/types';
+import { IAttractionType, AttractionFormType } from 'components/types';
 // context
 import useContext from '../context';
 
 const AttractionsList: FC<{
   attractions: IAttractionType[];
   onHandleDelete: (id: number) => void;
-}> = ({ attractions, onHandleDelete }) => {
+  setIsOpenDialog: (isOpen: boolean) => void;
+  setAttractionForm: (state: AttractionFormType) => void;
+}> = ({ attractions, onHandleDelete, setIsOpenDialog, setAttractionForm }) => {
   const { dispatch } = useContext();
 
   return (
@@ -48,6 +50,8 @@ const AttractionsList: FC<{
               onHandleMouseOut={() => {
                 dispatch({ type: 'CLOSE_INFO_WINDOW' });
               }}
+              setIsOpenDialog={setIsOpenDialog}
+              setAttractionForm={setAttractionForm}
             />
           ))}
         </List>

@@ -114,6 +114,19 @@ const handleAddAttraction = (req) => {
   });
 };
 
+const handleEditAttraction = (req) => {
+  const { id, attraction } = req.body;
+  return new Promise((resolve, reject) => {
+    db.run(`UPDATE attractions SET attraction = '${attraction}' WHERE id = '${id}'`, (err) => {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+      return resolve('done');
+    });
+  });
+};
+
 const handleDeleteCity = (req) => {
   const reqId = req.params.id;
   return new Promise((resolve, reject) => {
@@ -168,4 +181,5 @@ module.exports = {
   handleGetAttractionsForCity,
   handleDeleteAttraction,
   handleGetCityById,
+  handleEditAttraction,
 };

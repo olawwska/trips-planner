@@ -3,6 +3,7 @@ import { FC } from 'react';
 import { ListItem, ListItemButton, ListItemText } from '@mui/material';
 // icons
 import DeleteIcon from '@mui/icons-material/Clear';
+import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
 // types
 import { PlaceListItemType } from '../types';
@@ -14,38 +15,55 @@ const PlaceListItem: FC<PlaceListItemType> = ({
   onHandleFocus,
   onHandleClick,
   onHandleMouseOut,
+  setIsOpenDialog,
+  setAttractionForm,
 }) => {
+  const handleSetAttractionId = () => {
+    if (setAttractionForm) {
+      setAttractionForm((prevState) => ({
+        ...prevState,
+        id: id,
+      }));
+    }
+  };
   return (
     <ListItem
       disablePadding
       secondaryAction={
-        <IconButton
-          size="large"
-          edge="end"
-          aria-label="delete"
-          onClick={() => {
-            onDelete(id);
-          }}
-        >
-          <DeleteIcon />
-        </IconButton>
+        <>
+          <IconButton
+            size="large"
+            edge="end"
+            aria-label="edit"
+            onClick={() => {
+              setIsOpenDialog && setIsOpenDialog(true);
+              setAttractionForm && handleSetAttractionId();
+            }}
+          >
+            <EditIcon />
+          </IconButton>
+          <IconButton
+            size="large"
+            edge="end"
+            aria-label="delete"
+            onClick={() => {
+              onDelete(id);
+            }}
+          >
+            <DeleteIcon />
+          </IconButton>
+        </>
       }
     >
       <ListItemButton
         onMouseEnter={() => {
-          if (onHandleFocus) {
-            onHandleFocus();
-          }
+          onHandleFocus && onHandleFocus();
         }}
         onMouseLeave={() => {
-          if (onHandleMouseOut) {
-            onHandleMouseOut();
-          }
+          onHandleMouseOut && onHandleMouseOut();
         }}
         onClick={() => {
-          if (onHandleClick) {
-            onHandleClick(id);
-          }
+          onHandleClick && onHandleClick(id);
         }}
       >
         <ListItemText primary={name} />

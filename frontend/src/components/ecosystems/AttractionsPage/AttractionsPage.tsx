@@ -1,7 +1,7 @@
 import { FC } from 'react';
 import { useParams } from 'react-router-dom';
 // components
-import { Grid, Typography } from '@mui/material';
+import { Grid, Typography, Dialog, TextField, Button } from '@mui/material';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 // subcomponents
 import ListTitle from '../../atoms/ListTitle';
@@ -10,10 +10,12 @@ import MapComponent from '../MapComponent/MapComponent';
 // API
 import useAttractions from '../../useAttractions';
 import useCities from '../../useCities';
+// helpers
+import useAttractionForm from './useAttractionForm';
 
 const AttractionsPage: FC = () => {
   const { cityId } = useParams();
-  const { useGetAllAttractions, deleteAttraction } = useAttractions();
+  const { useGetAllAttractions, deleteAttraction, editAttraction } = useAttractions();
   const { data: attractions, isLoading: areAttractionsLoading } = useGetAllAttractions(cityId);
 
   const { useGetCityById } = useCities();
@@ -21,6 +23,14 @@ const AttractionsPage: FC = () => {
 
   const handleDeleteAttraction = (id: number) => {
     deleteAttraction(id);
+  };
+
+  const { setAttractionForm, attractionForm, setIsOpenDialog, isOpenDialog } = useAttractionForm();
+
+  const handleFormSubmit = () => {
+    editAttraction(attractionForm);
+    setAttractionForm({ id: undefined, attraction: '' });
+    setIsOpenDialog(false);
   };
 
   return (
@@ -35,7 +45,12 @@ const AttractionsPage: FC = () => {
       >
         <ListTitle title={`${selectedCity?.city} attractions list`} />
         {Boolean(attractions?.length) ? (
-          <AttractionsList attractions={attractions} onHandleDelete={handleDeleteAttraction} />
+          <AttractionsList
+            attractions={attractions}
+            onHandleDelete={handleDeleteAttraction}
+            setIsOpenDialog={setIsOpenDialog}
+            setAttractionForm={setAttractionForm}
+          />
         ) : (
           <>
             <Typography variant="h2" align="center" sx={{ margin: '10% 0' }}>
@@ -57,6 +72,14 @@ const AttractionsPage: FC = () => {
       {!areAttractionsLoading && (
         <MapComponent selectedCity={selectedCity} attractions={attractions} />
       )}
+      <Dialog open={isOpenDialog} onClose={() => setIsOpenDialog(false)}>
+        <TextField
+          onChange={(e) =>
+            setAttractionForm((prevState) => ({ ...prevState, attraction: e.target.value }))
+          }
+        />
+        <Button onClick={handleFormSubmit}>SUBMIT</Button>
+      </Dialog>
     </Grid>
   );
 };
