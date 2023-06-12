@@ -99,10 +99,10 @@ const handleAddCity = (req) => {
 };
 
 const handleAddAttraction = (req) => {
-  const { attraction, cityId, lat, lng, photo, rating, website } = req.body;
+  const { attraction, cityId, lat, lng, photo, website } = req.body;
   return new Promise((resolve, reject) => {
     db.run(
-      `INSERT INTO attractions(attraction,cityId,lat,lng,photo,rating,website) VALUES('${attraction}','${cityId}','${lat}','${lng}','${photo}','${rating}','${website}')`,
+      `INSERT INTO attractions(attraction,cityId,lat,lng,photo,website) VALUES('${attraction}','${cityId}','${lat}','${lng}','${photo}','${website}')`,
       (err, res) => {
         if (err) {
           console.log(err);
@@ -111,6 +111,19 @@ const handleAddAttraction = (req) => {
         return resolve('done');
       }
     );
+  });
+};
+
+const handleAddRating = (req) => {
+  const { id, rating } = req.body;
+  return new Promise((resolve, reject) => {
+    db.run(`UPDATE attractions SET rating = '${rating}' WHERE id = '${id}'`, (err) => {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+      resolve('rating added');
+    });
   });
 };
 
@@ -182,4 +195,5 @@ module.exports = {
   handleDeleteAttraction,
   handleGetCityById,
   handleEditAttraction,
+  handleAddRating,
 };

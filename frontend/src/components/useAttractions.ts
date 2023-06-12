@@ -74,11 +74,32 @@ const useAttractions = () => {
     },
   });
 
+  const useAddRating = async ({ id, rating }) => {
+    const { data } = await axios.put(`http://localhost:8000/addRating`, {
+      id: id,
+      rating: rating,
+    });
+    return data;
+  };
+
+  const { mutate: addRating } = useMutation(useAddRating, {
+    onSuccess: () => {
+      console.log('added rating');
+    },
+    onError: (err) => {
+      console.log(err);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries('attractions');
+    },
+  });
+
   return {
     useGetAllAttractions,
     addAttraction,
     deleteAttraction,
     editAttraction,
+    addRating,
   };
 };
 

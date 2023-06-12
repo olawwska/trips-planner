@@ -15,7 +15,7 @@ import useAttractionForm from './useAttractionForm';
 
 const AttractionsPage: FC = () => {
   const { cityId } = useParams();
-  const { useGetAllAttractions, deleteAttraction, editAttraction } = useAttractions();
+  const { useGetAllAttractions, deleteAttraction, editAttraction, addRating } = useAttractions();
   const { data: attractions, isLoading: areAttractionsLoading } = useGetAllAttractions(cityId);
 
   const { useGetCityById } = useCities();
@@ -50,6 +50,7 @@ const AttractionsPage: FC = () => {
             onHandleDelete={handleDeleteAttraction}
             setIsOpenDialog={setIsOpenDialog}
             setAttractionForm={setAttractionForm}
+            addRating={addRating}
           />
         ) : (
           <>

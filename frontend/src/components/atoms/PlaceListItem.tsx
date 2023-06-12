@@ -1,10 +1,11 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 // components
-import { ListItem, ListItemButton, ListItemText } from '@mui/material';
+import { ListItem, ListItemButton, ListItemText, Typography, Grid } from '@mui/material';
 // icons
 import DeleteIcon from '@mui/icons-material/Clear';
 import EditIcon from '@mui/icons-material/Edit';
 import IconButton from '@mui/material/IconButton';
+import Rating from '@mui/material/Rating';
 // types
 import { PlaceListItemType } from '../types';
 
@@ -17,7 +18,10 @@ const PlaceListItem: FC<PlaceListItemType> = ({
   onHandleMouseOut,
   setIsOpenDialog,
   setAttractionForm,
+  addRating,
 }) => {
+  const [rating, setRating] = useState<number | null>(null);
+
   const handleSetAttractionId = () => {
     if (setAttractionForm) {
       setAttractionForm((prevState) => ({
@@ -26,6 +30,7 @@ const PlaceListItem: FC<PlaceListItemType> = ({
       }));
     }
   };
+
   return (
     <ListItem
       disablePadding
@@ -66,7 +71,26 @@ const PlaceListItem: FC<PlaceListItemType> = ({
           onHandleClick && onHandleClick(id);
         }}
       >
-        <ListItemText primary={name} />
+        <ListItemText
+          primary={
+            <Grid
+              container
+              alignItems="flex-end"
+              justifyContent="space-between"
+              sx={{ width: '90%' }}
+            >
+              <Typography>{name}</Typography>
+              <Rating
+                name="simple-controlled"
+                value={rating}
+                onChange={(event, newValue) => {
+                  setRating(newValue);
+                  addRating && addRating({ id: id, rating: newValue });
+                }}
+              />
+            </Grid>
+          }
+        />
       </ListItemButton>
     </ListItem>
   );

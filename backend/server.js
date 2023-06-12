@@ -9,6 +9,7 @@ const {
   handleDeleteAttraction,
   handleGetCityById,
   handleEditAttraction,
+  handleAddRating,
 } = require('./databaseHandlers');
 
 let app = express();
@@ -40,6 +41,11 @@ app.get('/getAllAttractions/:cityId', async (req, res) => {
 app.put('/editAttraction', async (req, res) => {
   const result = await handleEditAttraction(req);
   res.send({ result });
+});
+
+app.put('/addRating', async (req, res) => {
+  const result = await handleAddRating(req);
+  res.send(result);
 });
 
 app.delete('/deleteCity/:id', async (req, res) => {

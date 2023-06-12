@@ -12,6 +12,7 @@ export type PlaceListItemType = {
   onHandleMouseOut?: () => void;
   setIsOpenDialog?: (isOpen: boolean) => void;
   setAttractionForm?: (state: any) => void;
+  addRating?: ({ id, rating }) => void;
 };
 
 interface Coordinates {
