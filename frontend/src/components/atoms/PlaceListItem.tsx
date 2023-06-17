@@ -19,8 +19,9 @@ const PlaceListItem: FC<PlaceListItemType> = ({
   setIsOpenDialog,
   setAttractionForm,
   addRating,
+  rating,
 }) => {
-  const [rating, setRating] = useState<number | null>(null);
+  const [attractionRating, setAttractionRating] = useState<number | null>(rating ?? null);
 
   const handleSetAttractionId = () => {
     if (setAttractionForm) {
@@ -80,14 +81,16 @@ const PlaceListItem: FC<PlaceListItemType> = ({
               sx={{ width: '90%' }}
             >
               <Typography>{name}</Typography>
-              <Rating
-                name="simple-controlled"
-                value={rating}
-                onChange={(event, newValue) => {
-                  setRating(newValue);
-                  addRating && addRating({ id: id, rating: newValue });
-                }}
-              />
+              {addRating && (
+                <Rating
+                  name="simple-controlled"
+                  value={attractionRating}
+                  onChange={(event, newValue) => {
+                    setAttractionRating(newValue);
+                    addRating({ id: id, rating: newValue });
+                  }}
+                />
+              )}
             </Grid>
           }
         />

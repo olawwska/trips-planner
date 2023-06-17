@@ -10,6 +10,7 @@ const {
   handleGetCityById,
   handleEditAttraction,
   handleAddRating,
+  handleGetRatingForAttraction,
 } = require('./databaseHandlers');
 
 let app = express();
@@ -35,7 +36,17 @@ app.get('/getAll', async (req, res) => {
 
 app.get('/getAllAttractions/:cityId', async (req, res) => {
   const result = await handleGetAttractionsForCity(req);
-  res.send(result);
+  const attractionsWithRating = await Promise.all(
+    result?.map(async (attraction) => {
+      const ratingResult = await handleGetRatingForAttraction(attraction.id);
+      console.log('ratingResult', ratingResult);
+      return {
+        ...attraction,
+        rating: ratingResult,
+      };
+    })
+  );
+  res.send(attractionsWithRating);
 });
 
 app.put('/editAttraction', async (req, res) => {
@@ -64,3 +75,8 @@ app.get('/getCityById/:cityId', async (req, res) => {
 });
 
 app.listen(8000, function () {});
+
+process.on('SIGINT', function () {
+  console.log('\nGracefully shutting down from SIGINT (Ctrl-C)');
+  process.exit(0);
+});

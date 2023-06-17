@@ -8,7 +8,7 @@ let db = new sqlite3.Database('testdb.db', (err) => {
   console.log('Connected to the in-memory SQLite database.');
 });
 
-// db.run('DROP TABLE IF EXISTS attractions');
+// db.run('DROP TABLE IF EXISTS attractionsRating');
 db.serialize(() => {
   db.run('CREATE TABLE IF NOT EXISTS cities(id integer primary key, city text)', (err) => {
     if (err) {
@@ -20,7 +20,19 @@ db.serialize(() => {
 
 db.serialize(() => {
   db.run(
-    'CREATE TABLE IF NOT EXISTS attractions(id integer primary key, attraction text, cityId integer, lat real, lng real, photo text, rating real, website text)',
+    'CREATE TABLE IF NOT EXISTS attractions(id integer primary key, attraction text, cityId integer, lat real, lng real, photo text, website text)',
+    (err) => {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+    }
+  );
+});
+
+db.serialize(() => {
+  db.run(
+    'CREATE TABLE IF NOT EXISTS attractionsRating(id integer primary key, rating real)',
     (err) => {
       if (err) {
         console.log(err);
@@ -58,7 +70,7 @@ const handleGetAttractionsForCity = (req) => {
   const cityId = req.params.cityId;
   return new Promise((resolve, reject) => {
     db.each(
-      `SELECT id,attraction,lat,lng,photo,rating,website FROM attractions WHERE cityId = '${cityId}'`,
+      `SELECT id,attraction,lat,lng,photo,website FROM attractions WHERE cityId = '${cityId}'`,
       (err, row) => {
         if (err) {
           console.log(err);
@@ -70,7 +82,6 @@ const handleGetAttractionsForCity = (req) => {
           lat: row.lat,
           lng: row.lng,
           photo: row.photo,
-          rating: row.rating,
           website: row.website,
         });
       },
@@ -82,6 +93,24 @@ const handleGetAttractionsForCity = (req) => {
         return resolve(attractions);
       }
     );
+  });
+};
+
+const handleGetRatingForAttraction = (id) => {
+  return new Promise((resolve, reject) => {
+    db.get(`SELECT rating FROM attractionsRating WHERE id = '${id}'`, (err, row) => {
+      if (err) {
+        console.log(err);
+        return reject(err);
+      }
+
+      let rating = null;
+      if (row) {
+        rating = row.rating;
+      }
+
+      return resolve(rating);
+    });
   });
 };
 
@@ -117,13 +146,16 @@ const handleAddAttraction = (req) => {
 const handleAddRating = (req) => {
   const { id, rating } = req.body;
   return new Promise((resolve, reject) => {
-    db.run(`UPDATE attractions SET rating = '${rating}' WHERE id = '${id}'`, (err) => {
-      if (err) {
-        console.log(err);
-        return reject(err);
+    db.run(
+      `INSERT OR REPLACE INTO attractionsRating(id,rating) VALUES('${id}','${rating}')`,
+      (err) => {
+        if (err) {
+          console.log(err);
+          return reject(err);
+        }
+        resolve('rating added');
       }
-      resolve('rating added');
-    });
+    );
   });
 };
 
@@ -196,4 +228,5 @@ module.exports = {
   handleGetCityById,
   handleEditAttraction,
   handleAddRating,
+  handleGetRatingForAttraction,
 };

@@ -13,6 +13,7 @@ export type PlaceListItemType = {
   setIsOpenDialog?: (isOpen: boolean) => void;
   setAttractionForm?: (state: any) => void;
   addRating?: ({ id, rating }) => void;
+  rating?: number | null;
 };
 
 interface Coordinates {
@@ -24,6 +25,7 @@ interface PlaceInfo {
   photo: string;
   attraction: string;
   website: string;
+  rating?: number;
 }
 
 export interface IPlaceType extends Coordinates, PlaceInfo {

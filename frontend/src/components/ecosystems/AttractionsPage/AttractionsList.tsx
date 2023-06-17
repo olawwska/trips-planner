@@ -30,7 +30,7 @@ const AttractionsList: FC<{
         variant="outlined"
       >
         <List>
-          {attractions?.map(({ id, attraction, lat, lng, photo, website }) => (
+          {attractions?.map(({ id, attraction, lat, lng, photo, website, rating }) => (
             <PlaceListItem
               key={id}
               id={id}
@@ -54,6 +54,7 @@ const AttractionsList: FC<{
               setIsOpenDialog={setIsOpenDialog}
               setAttractionForm={setAttractionForm}
               addRating={addRating}
+              rating={rating ?? null}
             />
           ))}
         </List>
