@@ -1,9 +1,11 @@
 import axios from 'axios';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
 import { CityType } from './types';
+import useUsers from './useUsers';
 
-const useCities = () => {
+const useCities = (token?: string) => {
   const queryClient = useQueryClient();
+  const { addPermission } = useUsers();
 
   const getAllCities = async () => {
     const { data } = await axios.get('http://localhost:8000/getAll');
@@ -18,8 +20,8 @@ const useCities = () => {
   };
 
   const { mutate: createCity } = useMutation(useCreateCity, {
-    onSuccess: (data) => {
-      console.log(data);
+    onSuccess: ({ result }) => {
+      addPermission({ cityId: result.lastID, userId: token });
     },
     onError: (err) => {
       console.log(err);
@@ -29,8 +31,8 @@ const useCities = () => {
     },
   });
 
-  const useDeleteCity = async (id: number) => {
-    const { data } = await axios.delete(`http://localhost:8000/deleteCity/${id}`);
+  const useDeleteCity = async (cityId: number) => {
+    const { data } = await axios.delete(`http://localhost:8000/deleteCity/${cityId}`);
     return data;
   };
 

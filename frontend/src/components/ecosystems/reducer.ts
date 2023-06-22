@@ -14,7 +14,7 @@ const reducer = (state: IInfoWindowStateType, action: InfoWindowActionsType) => 
       };
     case 'CHANGE_ALL_ATTRACTION_INFO':
       return {
-        id: action.id,
+        attractionId: action.attractionId,
         lat: action.lat,
         lng: action.lng,
         photo: action.photo,
@@ -26,7 +26,7 @@ const reducer = (state: IInfoWindowStateType, action: InfoWindowActionsType) => 
     case 'CLOSE_INFO_WINDOW':
       return {
         ...state,
-        id: initialState.id,
+        attractionId: initialState.attractionId,
         photo: initialState.photo,
         website: initialState.website,
         attraction: initialState.attraction,

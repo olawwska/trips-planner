@@ -20,8 +20,8 @@ const useAttractions = () => {
     };
   };
 
-  const useDeleteAttraction = async (id: number) => {
-    const { data } = await axios.delete(`http://localhost:8000/deleteAttraction/${id}`);
+  const useDeleteAttraction = async (attractionId: number) => {
+    const { data } = await axios.delete(`http://localhost:8000/deleteAttraction/${attractionId}`);
     return data;
   };
 
@@ -54,9 +54,9 @@ const useAttractions = () => {
     },
   });
 
-  const useEditAttraction = async ({ id, attraction }: AttractionFormType) => {
+  const useEditAttraction = async ({ attractionId, attraction }: AttractionFormType) => {
     const { data } = await axios.put(`http://localhost:8000/editAttraction`, {
-      id: id,
+      attractionId: attractionId,
       attraction: attraction,
     });
     return data;
@@ -74,9 +74,9 @@ const useAttractions = () => {
     },
   });
 
-  const useAddRating = async ({ id, rating }) => {
+  const useAddRating = async ({ attractionId, rating }) => {
     const { data } = await axios.put(`http://localhost:8000/addRating`, {
-      id: id,
+      attractionId: attractionId,
       rating: rating,
     });
     return data;

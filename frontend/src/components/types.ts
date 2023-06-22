@@ -12,7 +12,7 @@ export type PlaceListItemType = {
   onHandleMouseOut?: () => void;
   setIsOpenDialog?: (isOpen: boolean) => void;
   setAttractionForm?: (state: any) => void;
-  addRating?: ({ id, rating }) => void;
+  addRating?: ({ attractionId, rating }) => void;
   rating?: number | null;
 };
 
@@ -38,11 +38,11 @@ export interface IAttractionPayloadType extends Coordinates, PlaceInfo {
 }
 
 export interface IAttractionType extends IAttractionPayloadType {
-  id: number;
+  attractionId: number;
 }
 
 export interface IInfoWindowDataType extends PlaceInfo {
-  id: number;
+  attractionId: number;
 }
 
 export type InfoWindowActionsType =
@@ -58,7 +58,7 @@ export type InfoWindowActionsType =
     }
   | {
       type: 'CHANGE_ALL_ATTRACTION_INFO';
-      id: number;
+      attractionId: number;
       lat: number;
       lng: number;
       photo: string;
@@ -76,5 +76,5 @@ export interface IInfoWindowStateType extends IInfoWindowDataType, Coordinates {
 
 export type AttractionFormType = {
   attraction: string;
-  id?: number;
+  attractionId?: number;
 };

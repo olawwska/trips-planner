@@ -13,7 +13,7 @@ const AttractionsList: FC<{
   onHandleDelete: (id: number) => void;
   setIsOpenDialog: (isOpen: boolean) => void;
   setAttractionForm: (state: AttractionFormType) => void;
-  addRating: ({ id, rating }) => void;
+  addRating: ({ attractionId, rating }) => void;
 }> = ({ attractions, onHandleDelete, setIsOpenDialog, setAttractionForm, addRating }) => {
   const { dispatch } = useContext();
 
@@ -30,16 +30,16 @@ const AttractionsList: FC<{
         variant="outlined"
       >
         <List>
-          {attractions?.map(({ id, attraction, lat, lng, photo, website, rating }) => (
+          {attractions?.map(({ attractionId, attraction, lat, lng, photo, website, rating }) => (
             <PlaceListItem
-              key={id}
-              id={id}
+              key={attractionId}
+              id={attractionId}
               onDelete={onHandleDelete}
               name={attraction || ''}
               onHandleFocus={() => {
                 dispatch({
                   type: 'CHANGE_ALL_ATTRACTION_INFO',
-                  id: id,
+                  attractionId: attractionId,
                   lat: lat,
                   lng: lng,
                   photo: photo,

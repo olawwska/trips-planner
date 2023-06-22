@@ -9,8 +9,12 @@ let db = new sqlite3.Database('testdb.db', (err) => {
 });
 
 // db.run('DROP TABLE IF EXISTS attractionsRating');
+// db.run('DROP TABLE IF EXISTS attractions');
+// db.run('DROP TABLE IF EXISTS cities');
+// db.run('DROP TABLE IF EXISTS users');
+// db.run('DROP TABLE IF EXISTS permissions');
 db.serialize(() => {
-  db.run('CREATE TABLE IF NOT EXISTS cities(id integer primary key, city text)', (err) => {
+  db.run('CREATE TABLE IF NOT EXISTS cities(cityId integer primary key, city text)', (err) => {
     if (err) {
       console.log(err);
       throw err;
@@ -20,7 +24,7 @@ db.serialize(() => {
 
 db.serialize(() => {
   db.run(
-    'CREATE TABLE IF NOT EXISTS attractions(id integer primary key, attraction text, cityId integer, lat real, lng real, photo text, website text)',
+    'CREATE TABLE IF NOT EXISTS attractions(attractionId integer primary key, attraction text, cityId integer, lat real, lng real, photo text, website text)',
     (err) => {
       if (err) {
         console.log(err);
@@ -32,7 +36,7 @@ db.serialize(() => {
 
 db.serialize(() => {
   db.run(
-    'CREATE TABLE IF NOT EXISTS attractionsRating(id integer primary key, rating real)',
+    'CREATE TABLE IF NOT EXISTS attractionsRating(attractionId integer, userId integer PRIMARY KEY, rating real)',
     (err) => {
       if (err) {
         console.log(err);
@@ -42,17 +46,64 @@ db.serialize(() => {
   );
 });
 
+db.serialize(() => {
+  db.run('CREATE TABLE IF NOT EXISTS users(userId text)', (err) => {
+    if (err) {
+      console.log(err);
+      throw err;
+    }
+  });
+});
+
+db.serialize(() => {
+  db.run(
+    'CREATE TABLE IF NOT EXISTS permissions(userId text, cityId number, PRIMARY KEY(userId,cityId))',
+    (err) => {
+      if (err) {
+        console.log(err);
+        throw err;
+      }
+    }
+  );
+});
+
+const handleAddPermission = (req) => {
+  const { cityId, userId } = req.body;
+  return new Promise((resolve, reject) => {
+    db.run(`INSERT INTO permissions(cityId,userId) VALUES('${cityId}','${userId}')`, (err, res) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      }
+      resolve('added permission');
+    });
+  });
+};
+
+const handleAddUser = (req) => {
+  const { userEmail } = req.body;
+  return new Promise((resolve, reject) => {
+    db.run(`INSERT INTO users(userId) VALUES('${userEmail}')`, (err, res) => {
+      if (err) {
+        console.log(err);
+        reject(err);
+      }
+      resolve('user added');
+    });
+  });
+};
+
 const handleGetAllCities = () => {
   let cities = [];
   return new Promise((resolve, reject) => {
     db.each(
-      'SELECT id,city FROM cities',
+      'SELECT cityId,city FROM cities',
       (err, row) => {
         if (err) {
           console.log(err);
           return reject(err.city);
         }
-        cities.push({ city: row.city, id: row.id });
+        cities.push({ city: row.city, cityId: row.cityId });
       },
       (err) => {
         if (err) {
@@ -70,7 +121,7 @@ const handleGetAttractionsForCity = (req) => {
   const cityId = req.params.cityId;
   return new Promise((resolve, reject) => {
     db.each(
-      `SELECT id,attraction,lat,lng,photo,website FROM attractions WHERE cityId = '${cityId}'`,
+      `SELECT attractionId,attraction,lat,lng,photo,website FROM attractions WHERE cityId = '${cityId}'`,
       (err, row) => {
         if (err) {
           console.log(err);
@@ -78,7 +129,7 @@ const handleGetAttractionsForCity = (req) => {
         }
         attractions.push({
           attraction: row.attraction,
-          id: row.id,
+          attractionId: row.attractionId,
           lat: row.lat,
           lng: row.lng,
           photo: row.photo,
@@ -96,33 +147,37 @@ const handleGetAttractionsForCity = (req) => {
   });
 };
 
-const handleGetRatingForAttraction = (id) => {
+const handleGetRatingForAttraction = (attractionId) => {
   return new Promise((resolve, reject) => {
-    db.get(`SELECT rating FROM attractionsRating WHERE id = '${id}'`, (err, row) => {
-      if (err) {
-        console.log(err);
-        return reject(err);
-      }
+    db.get(
+      `SELECT AVG(rating) FROM attractionsRating WHERE attractionId = '${attractionId}'`,
+      (err, row) => {
+        if (err) {
+          console.log(err);
+          return reject(err);
+        }
 
-      let rating = null;
-      if (row) {
-        rating = row.rating;
-      }
+        let rating = null;
+        if (row) {
+          rating = Object.values(row)[0];
+        }
 
-      return resolve(rating);
-    });
+        return resolve(rating);
+      }
+    );
   });
 };
 
 const handleAddCity = (req) => {
   const city = req.body.city;
   return new Promise((resolve, reject) => {
-    db.run(`INSERT INTO cities(city) VALUES('${city}')`, (err, res) => {
+    db.run(`INSERT INTO cities(city) VALUES('${city}')`, function (err) {
       if (err) {
         console.log(err);
-        return reject(err.city);
+        throw err;
       }
-      return resolve('done');
+      console.log(this);
+      resolve(this);
     });
   });
 };
@@ -144,10 +199,10 @@ const handleAddAttraction = (req) => {
 };
 
 const handleAddRating = (req) => {
-  const { id, rating } = req.body;
+  const { attractionId, rating } = req.body;
   return new Promise((resolve, reject) => {
     db.run(
-      `INSERT OR REPLACE INTO attractionsRating(id,rating) VALUES('${id}','${rating}')`,
+      `INSERT OR REPLACE INTO attractionsRating(attractionId,rating) VALUES('${attractionId}','${rating}')`,
       (err) => {
         if (err) {
           console.log(err);
@@ -160,29 +215,32 @@ const handleAddRating = (req) => {
 };
 
 const handleEditAttraction = (req) => {
-  const { id, attraction } = req.body;
+  const { attractionId, attraction } = req.body;
   return new Promise((resolve, reject) => {
-    db.run(`UPDATE attractions SET attraction = '${attraction}' WHERE id = '${id}'`, (err) => {
-      if (err) {
-        console.log(err);
-        return reject(err);
+    db.run(
+      `UPDATE attractions SET attraction = '${attraction}' WHERE attractionId = '${attractionId}'`,
+      (err) => {
+        if (err) {
+          console.log(err);
+          return reject(err);
+        }
+        return resolve('done');
       }
-      return resolve('done');
-    });
+    );
   });
 };
 
 const handleDeleteCity = (req) => {
-  const reqId = req.params.id;
+  const cityId = req.params.cityId;
   return new Promise((resolve, reject) => {
-    db.run(`DELETE from cities WHERE id = '${reqId}'`, (err) => {
+    db.run(`DELETE from cities WHERE cityId = '${cityId}'`, (err) => {
       if (err) {
         console.log(err);
         return reject(err.city);
       }
       return resolve('removed cities');
     });
-    db.run(`DELETE from attractions WHERE cityId = '${reqId}'`, (err) => {
+    db.run(`DELETE from attractions WHERE cityId = '${cityId}'`, (err) => {
       if (err) {
         console.log(err);
         return reject(err.attraction);
@@ -193,14 +251,14 @@ const handleDeleteCity = (req) => {
 };
 
 const handleDeleteAttraction = (req) => {
-  const reqId = req.params.id;
+  const attractionId = req.params.attractionId;
   return new Promise((resolve, reject) => {
-    db.run(`DELETE from attractions WHERE id = '${reqId}'`, (err) => {
+    db.run(`DELETE from attractions WHERE attractionId = '${attractionId}'`, (err) => {
       if (err) {
         console.log(err);
         return reject(err.attraction);
       }
-      return resolve(reqId);
+      return resolve(attractionId);
     });
   });
 };
@@ -208,7 +266,7 @@ const handleDeleteAttraction = (req) => {
 const handleGetCityById = (req) => {
   const cityId = req.params.cityId;
   return new Promise((resolve, reject) => {
-    db.each(`SELECT city,id FROM cities WHERE id = '${cityId}'`, (err, row) => {
+    db.each(`SELECT city,cityId FROM cities WHERE cityId = '${cityId}'`, (err, row) => {
       if (err) {
         console.log(err);
         return reject(err);
@@ -229,4 +287,6 @@ module.exports = {
   handleEditAttraction,
   handleAddRating,
   handleGetRatingForAttraction,
+  handleAddUser,
+  handleAddPermission,
 };

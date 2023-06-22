@@ -11,6 +11,8 @@ const {
   handleEditAttraction,
   handleAddRating,
   handleGetRatingForAttraction,
+  handleAddUser,
+  handleAddPermission,
 } = require('./databaseHandlers');
 
 let app = express();
@@ -24,8 +26,18 @@ app.post('/addCity', async (req, res) => {
   res.send({ result });
 });
 
+app.post('/addPermission', async (req, res) => {
+  const result = await handleAddPermission(req);
+  res.send({ result });
+});
+
 app.post('/addAttraction', async (req, res) => {
   const result = await handleAddAttraction(req);
+  res.send({ result });
+});
+
+app.post('/addUser', async (req, res) => {
+  const result = await handleAddUser(req);
   res.send({ result });
 });
 
@@ -39,7 +51,6 @@ app.get('/getAllAttractions/:cityId', async (req, res) => {
   const attractionsWithRating = await Promise.all(
     result?.map(async (attraction) => {
       const ratingResult = await handleGetRatingForAttraction(attraction.id);
-      console.log('ratingResult', ratingResult);
       return {
         ...attraction,
         rating: ratingResult,
@@ -59,12 +70,12 @@ app.put('/addRating', async (req, res) => {
   res.send(result);
 });
 
-app.delete('/deleteCity/:id', async (req, res) => {
+app.delete('/deleteCity/:cityId', async (req, res) => {
   const result = await handleDeleteCity(req);
   res.send(result);
 });
 
-app.delete('/deleteAttraction/:id', async (req, res) => {
+app.delete('/deleteAttraction/:attractionId', async (req, res) => {
   const result = await handleDeleteAttraction(req);
   res.send(result);
 });

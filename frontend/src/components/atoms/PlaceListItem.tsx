@@ -85,9 +85,10 @@ const PlaceListItem: FC<PlaceListItemType> = ({
                 <Rating
                   name="simple-controlled"
                   value={attractionRating}
+                  precision={0.5}
                   onChange={(event, newValue) => {
                     setAttractionRating(newValue);
-                    addRating({ id: id, rating: newValue });
+                    addRating({ attractionId: id, rating: newValue });
                   }}
                 />
               )}

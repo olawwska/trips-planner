@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import { FC, useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { QueryClientProvider, QueryClient } from 'react-query';
 import { ThemeProvider, createTheme } from '@mui/material';
@@ -7,6 +7,7 @@ import { MapInfoWindowProvider } from 'components/ecosystems/context';
 import AttractionsPage from './components/ecosystems/AttractionsPage/AttractionsPage';
 import CitiesPage from './components/ecosystems/CitiesPage/CitiesPage';
 import './index.css';
+import HomePage from './components/ecosystems/HomePage/HomePage';
 
 const theme = createTheme({
   components: {
@@ -92,6 +93,7 @@ const theme = createTheme({
 });
 
 const App: FC = () => {
+  const [token, setToken] = useState('');
   const queryClient = new QueryClient();
 
   return (
@@ -100,8 +102,14 @@ const App: FC = () => {
         <QueryClientProvider client={queryClient}>
           <Router>
             <Routes>
-              <Route path="/" element={<CitiesPage />} />
-              <Route path="attractions/:cityId" element={<AttractionsPage />} />
+              {!token ? (
+                <Route path="/" element={<HomePage setToken={setToken} />} />
+              ) : (
+                <>
+                  <Route path="/cities" element={<CitiesPage token={token} />} />
+                  <Route path="attractions/:cityId" element={<AttractionsPage />} />
+                </>
+              )}
             </Routes>
           </Router>
         </QueryClientProvider>

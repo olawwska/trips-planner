@@ -97,11 +97,18 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
 
   const [mapRef, setMapRef] = useState<any>();
 
-  const handleMarkerClick = ({ id, lat, lng, photo, attraction, website }: IAttractionType) => {
+  const handleMarkerClick = ({
+    attractionId,
+    lat,
+    lng,
+    photo,
+    attraction,
+    website,
+  }: IAttractionType) => {
     mapRef?.panTo({ lat, lng });
     dispatch({
       type: 'CHANGE_ALL_ATTRACTION_INFO',
-      id: id,
+      attractionId: attractionId,
       lat: lat,
       lng: lng,
       photo: photo,
@@ -124,15 +131,15 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
           >
             <TextFieldPlace setInputVal={setInputVal} inputVal={inputVal} mapTextField />
           </Autocomplete>
-          {attractions.map(({ lat, lng, id, photo, attraction, website }) => (
+          {attractions.map(({ lat, lng, attractionId, photo, attraction, website }) => (
             <MarkerF
-              key={id}
+              key={attractionId}
               position={{ lat: lat, lng: lng }}
               onClick={() => {
-                handleMarkerClick({ id, lat, lng, photo, attraction, website });
+                handleMarkerClick({ attractionId, lat, lng, photo, attraction, website });
               }}
             >
-              {infoWindowData.isOpen && infoWindowData?.id === id && (
+              {infoWindowData.isOpen && infoWindowData?.attractionId === attractionId && (
                 <InfoWindowF
                   onCloseClick={() => {
                     dispatch({ type: 'CLOSE_INFO_WINDOW' });

@@ -21,15 +21,15 @@ const AttractionsPage: FC = () => {
   const { useGetCityById } = useCities();
   const selectedCity = useGetCityById(cityId);
 
-  const handleDeleteAttraction = (id: number) => {
-    deleteAttraction(id);
+  const handleDeleteAttraction = (attractionId: number) => {
+    deleteAttraction(attractionId);
   };
 
   const { setAttractionForm, attractionForm, setIsOpenDialog, isOpenDialog } = useAttractionForm();
 
   const handleFormSubmit = () => {
     editAttraction(attractionForm);
-    setAttractionForm({ id: undefined, attraction: '' });
+    setAttractionForm({ attractionId: undefined, attraction: '' });
     setIsOpenDialog(false);
   };
 
