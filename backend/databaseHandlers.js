@@ -67,19 +67,6 @@ db.serialize(() => {
   );
 });
 
-const handleAddPermission = (req) => {
-  const { cityId, userId } = req.body;
-  return new Promise((resolve, reject) => {
-    db.run(`INSERT INTO permissions(cityId,userId) VALUES('${cityId}','${userId}')`, (err, res) => {
-      if (err) {
-        console.log(err);
-        reject(err);
-      }
-      resolve('added permission');
-    });
-  });
-};
-
 const handleAddUser = (req) => {
   const { userEmail } = req.body;
   return new Promise((resolve, reject) => {
@@ -90,29 +77,6 @@ const handleAddUser = (req) => {
       }
       resolve('user added');
     });
-  });
-};
-
-const handleGetAllCities = () => {
-  let cities = [];
-  return new Promise((resolve, reject) => {
-    db.each(
-      'SELECT cityId,city FROM cities',
-      (err, row) => {
-        if (err) {
-          console.log(err);
-          return reject(err.city);
-        }
-        cities.push({ city: row.city, cityId: row.cityId });
-      },
-      (err) => {
-        if (err) {
-          console.log(err);
-          return reject(err.city);
-        }
-        resolve(cities);
-      }
-    );
   });
 };
 
@@ -168,18 +132,31 @@ const handleGetRatingForAttraction = (attractionId) => {
   });
 };
 
-const handleAddCity = (req) => {
-  const city = req.body.city;
-  return new Promise((resolve, reject) => {
-    db.run(`INSERT INTO cities(city) VALUES('${city}')`, function (err) {
-      if (err) {
-        console.log(err);
-        throw err;
-      }
-      console.log(this);
-      resolve(this);
-    });
-  });
+const handleAddCity = async (req) => {
+  const { city, userId } = req.body;
+  let cityId;
+  return Promise.all([
+    await new Promise((resolve, reject) => {
+      db.run(`INSERT INTO cities(city) VALUES('${city}')`, function (err) {
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
+        cityId = this.lastID;
+        resolve('added city');
+      });
+      return cityId;
+    }),
+    await new Promise((resolve, reject) => {
+      db.run(`INSERT INTO permissions(cityId, userId) VALUES('${cityId}','${userId}')`, (err) => {
+        if (err) {
+          console.log(err);
+          reject(err);
+        }
+        resolve('added permission');
+      });
+    }),
+  ]);
 };
 
 const handleAddAttraction = (req) => {
@@ -263,8 +240,7 @@ const handleDeleteAttraction = (req) => {
   });
 };
 
-const handleGetCityById = (req) => {
-  const cityId = req.params.cityId;
+const handleGetCityById = (cityId) => {
   return new Promise((resolve, reject) => {
     db.each(`SELECT city,cityId FROM cities WHERE cityId = '${cityId}'`, (err, row) => {
       if (err) {
@@ -274,6 +250,28 @@ const handleGetCityById = (req) => {
       return resolve(row);
     });
   });
+};
+
+const handleGetAllCities = async (req) => {
+  const { userId } = req.params;
+  let citiesIds = [];
+  return Promise.all([
+    await new Promise((resolve, reject) => {
+      db.each(`SELECT cityId FROM permissions WHERE userId = '${userId}'`, (err, row) => {
+        if (err) {
+          console.log(err);
+          return reject(err);
+        }
+        citiesIds.push(row.cityId);
+        resolve(citiesIds);
+      });
+    }),
+    await new Promise(async (resolve) => {
+      const cities = citiesIds.map((cityId) => handleGetCityById(cityId));
+      const resolvedCities = await Promise.all(cities);
+      resolve(resolvedCities);
+    }),
+  ]);
 };
 
 module.exports = {
@@ -288,5 +286,4 @@ module.exports = {
   handleAddRating,
   handleGetRatingForAttraction,
   handleAddUser,
-  handleAddPermission,
 };

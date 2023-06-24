@@ -12,7 +12,6 @@ const {
   handleAddRating,
   handleGetRatingForAttraction,
   handleAddUser,
-  handleAddPermission,
 } = require('./databaseHandlers');
 
 let app = express();
@@ -26,11 +25,6 @@ app.post('/addCity', async (req, res) => {
   res.send({ result });
 });
 
-app.post('/addPermission', async (req, res) => {
-  const result = await handleAddPermission(req);
-  res.send({ result });
-});
-
 app.post('/addAttraction', async (req, res) => {
   const result = await handleAddAttraction(req);
   res.send({ result });
@@ -41,8 +35,8 @@ app.post('/addUser', async (req, res) => {
   res.send({ result });
 });
 
-app.get('/getAll', async (req, res) => {
-  const result = await handleGetAllCities();
+app.get('/getAllCities/:userId', async (req, res) => {
+  const result = await handleGetAllCities(req);
   res.send(result);
 });
 
