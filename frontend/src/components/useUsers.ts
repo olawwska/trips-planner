@@ -16,24 +16,7 @@ const useUsers = () => {
     },
   });
 
-  const useAddPermission = async ({ cityId, userId }) => {
-    const { data } = await axios.post('http://localhost:8000/addPermission', {
-      cityId: cityId,
-      userId: userId,
-    });
-    return data;
-  };
-
-  const { mutate: addPermission } = useMutation(useAddPermission, {
-    onSuccess: () => {
-      console.log('success permission');
-    },
-    onError: (err) => {
-      console.log(err);
-    },
-  });
-
-  return { addUser, addPermission };
+  return { addUser };
 };
 
 export default useUsers;

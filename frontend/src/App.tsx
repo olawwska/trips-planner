@@ -107,7 +107,7 @@ const App: FC = () => {
               ) : (
                 <>
                   <Route path="/cities" element={<CitiesPage token={token} />} />
-                  <Route path="attractions/:cityId" element={<AttractionsPage />} />
+                  <Route path="attractions/:cityId" element={<AttractionsPage token={token} />} />
                 </>
               )}
             </Routes>

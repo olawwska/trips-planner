@@ -1,32 +1,34 @@
 import axios from 'axios';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
 import { CityType } from './types';
-import useUsers from './useUsers';
 
-const useCities = (token?: string) => {
+const useCities = ({ userId }) => {
   const queryClient = useQueryClient();
-  const { addPermission } = useUsers();
 
   const getAllCities = async () => {
-    const { data } = await axios.get('http://localhost:8000/getAll');
+    const { data } = await axios.get(`http://localhost:8000/getAllCities/${userId}`);
     return data;
   };
 
-  const { data: cities, isLoading } = useQuery('cities', getAllCities);
+  const { data: cities, isLoading } = useQuery(['cities', userId], getAllCities);
 
-  const useCreateCity = async (city: any) => {
-    const { data } = await axios.post('http://localhost:8000/addCity', city);
+  const useCreateCity = async ({ city }) => {
+    const { data } = await axios.post('http://localhost:8000/addCity', {
+      city: city,
+      userId: userId,
+    });
     return data;
   };
 
   const { mutate: createCity } = useMutation(useCreateCity, {
-    onSuccess: ({ result }) => {
-      addPermission({ cityId: result.lastID, userId: token });
+    onSuccess: (data) => {
+      console.log(data);
     },
     onError: (err) => {
       console.log(err);
     },
     onSettled: () => {
+      console.log('here');
       queryClient.invalidateQueries('cities');
     },
   });
@@ -62,7 +64,7 @@ const useCities = (token?: string) => {
   };
 
   return {
-    cities,
+    cities: cities?.[1],
     areCitiesLoading: isLoading,
     createCity,
     deleteCity,
