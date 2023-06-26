@@ -24,10 +24,10 @@ const CitiesList: FC<{
         variant="outlined"
       >
         <List>
-          {cities?.map(({ id, city }) => (
+          {cities?.map(({ cityId, city }) => (
             <PlaceListItem
-              key={id}
-              id={id}
+              key={cityId}
+              id={cityId}
               onDelete={onHandleDelete}
               name={city}
               onHandleClick={onHandleClick}

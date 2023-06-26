@@ -80,7 +80,7 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
     }
   };
 
-  const onPlaceChanged = () => {
+  const onAttractionChange = () => {
     if (searchResult) {
       const place = searchResult.getPlace();
       const placeInfo: IPlaceType = {
@@ -127,7 +127,7 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
           <Autocomplete
             onLoad={onLoad}
             //@ts-ignore
-            onPlaceChanged={(place) => onPlaceChanged(place)}
+            onPlaceChanged={(attraction: string) => onAttractionChange(attraction)}
           >
             <TextFieldPlace setInputVal={setInputVal} inputVal={inputVal} mapTextField />
           </Autocomplete>

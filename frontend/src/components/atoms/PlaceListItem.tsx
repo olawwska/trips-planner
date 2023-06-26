@@ -34,6 +34,7 @@ const PlaceListItem: FC<PlaceListItemType> = ({
 
   return (
     <ListItem
+      key={id}
       disablePadding
       secondaryAction={
         <>

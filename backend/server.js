@@ -75,7 +75,8 @@ app.delete('/deleteAttraction/:attractionId', async (req, res) => {
 });
 
 app.get('/getCityById/:cityId', async (req, res) => {
-  const result = await handleGetCityById(req);
+  const { cityId } = req.params;
+  const result = await handleGetCityById(cityId);
   res.send(result);
 });
 

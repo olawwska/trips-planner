@@ -28,7 +28,6 @@ const useCities = ({ userId }) => {
       console.log(err);
     },
     onSettled: () => {
-      console.log('here');
       queryClient.invalidateQueries('cities');
     },
   });
@@ -64,7 +63,7 @@ const useCities = ({ userId }) => {
   };
 
   return {
-    cities: cities?.[1],
+    cities: cities,
     areCitiesLoading: isLoading,
     createCity,
     deleteCity,

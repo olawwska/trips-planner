@@ -1,6 +1,6 @@
 export interface CityType {
   city: string;
-  id: number;
+  cityId: number;
 }
 
 export type PlaceListItemType = {

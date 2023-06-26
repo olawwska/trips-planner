@@ -8,9 +8,6 @@ const useUsers = () => {
   };
 
   const { mutate: addUser } = useMutation(useAddUser, {
-    onSuccess: () => {
-      console.log('success');
-    },
     onError: (err) => {
       console.log(err);
     },
