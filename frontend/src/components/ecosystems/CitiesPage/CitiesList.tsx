@@ -12,7 +12,7 @@ const CitiesList: FC<{
   onHandleClick: (id: number) => void;
 }> = ({ cities, onHandleDelete, onHandleClick }) => {
   return (
-    <Grid item xs={112}>
+    <Grid item xs={12}>
       <Paper
         style={{
           maxHeight: '350px',

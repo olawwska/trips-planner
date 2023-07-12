@@ -1,4 +1,4 @@
-import { FC } from 'react';
+import React, { FC } from 'react';
 // components
 import { Grid, Typography } from '@mui/material';
 // sub-components
@@ -9,7 +9,7 @@ const NoPlacesPage: FC<{
   inputVal: string;
   setInputVal: (val: string) => void;
   label: string;
-  title: string;
+  title: React.ReactNode;
   onHandleSubmit: () => void;
 }> = ({ inputVal, setInputVal, label, title, onHandleSubmit }) => {
   return (

@@ -45,7 +45,7 @@ export interface IInfoWindowDataType extends PlaceInfo {
   attractionId: number;
 }
 
-export type InfoWindowActionsType =
+export type TripsPlannerActionsType =
   | {
       type: 'CHANGE_ATTRACTION_ID';
       id: number;
@@ -68,10 +68,17 @@ export type InfoWindowActionsType =
     }
   | {
       type: 'CLOSE_INFO_WINDOW';
+    }
+  | {
+      type: 'AUTHENTICATE_USER';
+      isAuthenticated: boolean;
+      authenticatedUserName: string;
     };
 
-export interface IInfoWindowStateType extends IInfoWindowDataType, Coordinates {
+export interface TripsPlannerStateType extends IInfoWindowDataType, Coordinates {
   isOpen: boolean;
+  isAuthenticated: false;
+  authenticatedUserName: string;
 }
 
 export type AttractionFormType = {

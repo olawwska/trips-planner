@@ -38,7 +38,9 @@ const useCities = () => {
   });
 
   const useDeleteCity = async (cityId: number) => {
-    const { data } = await axios.delete(`http://localhost:8000/deleteCity/${cityId}`);
+    const { data } = await axios.delete(`http://localhost:8000/deleteCity/${cityId}`, {
+      withCredentials: true,
+    });
     return data;
   };
 
@@ -56,7 +58,9 @@ const useCities = () => {
   });
 
   const getCityById = async (cityId: string) => {
-    const { data } = await axios.get(`http://localhost:8000/getCityById/${cityId}`);
+    const { data } = await axios.get(`http://localhost:8000/getCityById/${cityId}`, {
+      withCredentials: true,
+    });
     return data;
   };
 
@@ -68,7 +72,7 @@ const useCities = () => {
   };
 
   return {
-    cities: cities,
+    cities,
     areCitiesLoading: isLoading,
     createCity,
     deleteCity,

@@ -1,14 +1,14 @@
 import { createContext, FC, useReducer, useContext } from 'react';
-import { IInfoWindowStateType, InfoWindowActionsType } from 'components/types';
+import { TripsPlannerStateType, TripsPlannerActionsType } from 'components/types';
 import reducer from './reducer';
 
-type Dispatch = (action: InfoWindowActionsType) => void;
+type Dispatch = (action: TripsPlannerActionsType) => void;
 
-export const StateContext = createContext<IInfoWindowStateType | undefined>(undefined);
+export const StateContext = createContext<TripsPlannerStateType | undefined>(undefined);
 
 const DispatchContext = createContext<Dispatch | undefined>(undefined);
 
-export const initialState: IInfoWindowStateType = {
+export const initialState: TripsPlannerStateType = {
   attraction: '',
   attractionId: 0,
   photo: '',
@@ -16,9 +16,12 @@ export const initialState: IInfoWindowStateType = {
   isOpen: false,
   lat: 0,
   lng: 0,
+  isAuthenticated: false,
+  authenticatedUserName: '',
 };
 
 export const MapInfoWindowProvider: FC<any> = ({ children }) => {
+  //@ts-ignore
   const [state, dispatch] = useReducer(reducer, initialState);
 
   return (

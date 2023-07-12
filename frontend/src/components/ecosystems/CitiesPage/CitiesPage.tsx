@@ -1,7 +1,7 @@
 import { FC, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 //components
-import { Box, Grid } from '@mui/material';
+import { Grid, Box, Typography } from '@mui/material';
 //subcomponents
 import ListTitle from '../../atoms/ListTitle';
 import NoPlacesPage from '../../molecules/NoPlacesPage';
@@ -10,8 +10,10 @@ import ButtonSubmitPlace from '../../atoms/ButtonSubmitPlace';
 import CitiesList from './CitiesList';
 // API
 import useCities from '../../useCities';
+import useContext from '../context';
 
 const CitiesPage: FC = () => {
+  const { state } = useContext();
   const navigate = useNavigate();
 
   const [inputVal, setInputVal] = useState<string>('');
@@ -32,9 +34,9 @@ const CitiesPage: FC = () => {
   };
 
   return (
-    <Box sx={{ maxWidth: '50%', margin: 'auto', marginTop: '10%' }}>
+    <Grid container display="flex" margin="auto" alignItems="center" height="100vh" width="50vw">
       {Boolean(cities?.length) ? (
-        <>
+        <Grid container>
           <ListTitle title={'Cities list'} />
           <CitiesList
             cities={cities}
@@ -47,17 +49,27 @@ const CitiesPage: FC = () => {
           <Grid item xs={12}>
             <ButtonSubmitPlace handleSubmit={handleAddCity} text={'Add a city'} />
           </Grid>
-        </>
+        </Grid>
       ) : (
         <NoPlacesPage
           inputVal={inputVal}
           setInputVal={setInputVal}
           label={'Add city'}
-          title={'There are no cities added yet'}
+          title={
+            <Box>
+              <Typography
+                variant="h2"
+                style={{ color: 'rgb(254, 80, 0)', display: 'inline' }}
+              >{`Hi ${state.authenticatedUserName}! `}</Typography>
+              <Typography variant="h2" style={{ display: 'inline' }}>
+                There are no cities added yet
+              </Typography>
+            </Box>
+          }
           onHandleSubmit={handleAddCity}
         />
       )}
-    </Box>
+    </Grid>
   );
 };
 

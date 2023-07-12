@@ -8,6 +8,7 @@ import AttractionsPage from './components/ecosystems/AttractionsPage/Attractions
 import CitiesPage from './components/ecosystems/CitiesPage/CitiesPage';
 import './index.css';
 import HomePage from './components/ecosystems/HomePage/HomePage';
+import LoginSuccess from './components/ecosystems/HomePage/LoginSuccess';
 
 const theme = createTheme({
   components: {
@@ -104,6 +105,7 @@ const App: FC = () => {
               <Route path="/" element={<HomePage />} />
               <Route path="/cities" element={<CitiesPage />} />
               <Route path="attractions/:cityId" element={<AttractionsPage />} />
+              <Route path="/login/success" element={<LoginSuccess />} />
             </Routes>
           </Router>
         </QueryClientProvider>

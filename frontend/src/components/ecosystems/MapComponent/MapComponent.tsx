@@ -70,13 +70,18 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
   const onLoad = (autocomplete) => {
     setSearchResult(autocomplete);
   };
+  const [mapRef, setMapRef] = useState<any>();
+
+  const setNewBounds = () => {
+    const bounds = new google.maps.LatLngBounds();
+    attractions.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
+    mapRef?.fitBounds(bounds);
+  };
 
   const onLoadMap = (map) => {
     setMapRef(map);
     if (attractions?.length) {
-      const bounds = new google.maps.LatLngBounds();
-      attractions.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
-      map.fitBounds(bounds);
+      setNewBounds();
     }
   };
 
@@ -92,10 +97,9 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
         website: place.website,
       };
       handleAddAttraction(placeInfo);
+      setNewBounds();
     }
   };
-
-  const [mapRef, setMapRef] = useState<any>();
 
   const handleMarkerClick = ({
     attractionId,

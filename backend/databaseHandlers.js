@@ -22,7 +22,7 @@ db.serialize(() => {
 });
 
 db.serialize(() => {
-  db_run('CREATE TABLE IF NOT EXISTS users(userId text,userEmail text)');
+  db_run('CREATE TABLE IF NOT EXISTS users(userId text,userEmail text,userName text)');
 });
 
 db.serialize(() => {
@@ -92,6 +92,7 @@ const handleDeleteCity = (req) => {
   const cityId = req.params.cityId;
   db_run(`DELETE from cities WHERE cityId = '${cityId}'`);
   db_run(`DELETE from attractions WHERE cityId = '${cityId}'`);
+  db_run(`DELETE from permissions WHERE cityId = '${cityId}'`);
 };
 
 const handleDeleteAttraction = (req) => {
@@ -100,14 +101,18 @@ const handleDeleteAttraction = (req) => {
 };
 
 const handleGetCityById = async (cityId) => {
-  const city = await db_each(`SELECT city,cityId FROM cities WHERE cityId = '${cityId}'`);
+  const city = await db_get(`SELECT city,cityId FROM cities WHERE cityId = '${cityId}'`);
   return city;
 };
 
 const handleGetAllCities = async (req) => {
   const { googleId } = req.user;
   const citiesIds = await db_all(`SELECT cityId FROM permissions WHERE userId = '${googleId}'`);
-  const cities = await Promise.all(citiesIds.map(({ cityId }) => handleGetCityById(cityId)));
+  const cities = await db_all(
+    `SELECT city,cityId FROM cities WHERE cityId IN(${citiesIds
+      ?.map(({ cityId }) => cityId)
+      .join(',')})`
+  );
   return cities;
 };
 

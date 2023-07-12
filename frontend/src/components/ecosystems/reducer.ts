@@ -1,7 +1,7 @@
 import { initialState } from './context';
-import { IInfoWindowStateType, InfoWindowActionsType } from '../types';
+import { TripsPlannerStateType, TripsPlannerActionsType } from '../types';
 
-const reducer = (state: IInfoWindowStateType, action: InfoWindowActionsType) => {
+const reducer = (state: TripsPlannerStateType, action: TripsPlannerActionsType) => {
   switch (action.type) {
     case 'CHANGE_ATTRACTION_ID':
       return { ...state, id: action.id };
@@ -31,6 +31,12 @@ const reducer = (state: IInfoWindowStateType, action: InfoWindowActionsType) => 
         website: initialState.website,
         attraction: initialState.attraction,
         isOpen: initialState.isOpen,
+      };
+    case 'AUTHENTICATE_USER':
+      return {
+        ...state,
+        isAuthenticated: action.isAuthenticated,
+        authenticatedUserName: action.authenticatedUserName,
       };
     default:
       return state;

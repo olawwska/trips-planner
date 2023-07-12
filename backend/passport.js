@@ -11,12 +11,13 @@ passport.use(
     },
     (req, accessToken, refreshToken, profile, cb) => {
       db_run(
-        `INSERT INTO users(userId,userEmail) VALUES('${profile.id}','${profile.emails[0].value}')`
+        `INSERT INTO users(userId,userEmail,userName) VALUES('${profile.id}','${profile.emails[0].value}','${profile.name.givenName}')`
       );
 
       const user = {
         googleId: profile.id,
         userEmail: profile.emails[0].value,
+        userName: profile.name.givenName,
       };
 
       return cb(null, user);
