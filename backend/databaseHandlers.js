@@ -22,7 +22,7 @@ db.serialize(() => {
 });
 
 db.serialize(() => {
-  db_run('CREATE TABLE IF NOT EXISTS users(userId text)');
+  db_run('CREATE TABLE IF NOT EXISTS users(userId text,userEmail text)');
 });
 
 db.serialize(() => {
@@ -30,11 +30,6 @@ db.serialize(() => {
     'CREATE TABLE IF NOT EXISTS permissions(userId text, cityId number, PRIMARY KEY(userId,cityId))'
   );
 });
-
-const handleAddUser = (req) => {
-  const { userEmail } = req.body;
-  db_run(`INSERT INTO users(userId) VALUES('${userEmail}')`);
-};
 
 const handleGetAttractionsForCity = async (req) => {
   const cityId = req.params.cityId;
@@ -66,9 +61,10 @@ const handleGetRatingForAttraction = (attractionId) => {
 };
 
 const handleAddCity = async (req) => {
-  const { city, userId } = req.body;
+  const { city } = req.body;
+  const { googleId } = req.user;
   let cityId = await db_run(`INSERT INTO cities(city) VALUES('${city}')`);
-  db_run(`INSERT INTO permissions(cityId, userId) VALUES('${cityId.lastID}','${userId}')`);
+  db_run(`INSERT INTO permissions(cityId, userId) VALUES('${cityId.lastID}','${googleId}')`);
 };
 
 const handleAddAttraction = (req) => {
@@ -109,8 +105,8 @@ const handleGetCityById = async (cityId) => {
 };
 
 const handleGetAllCities = async (req) => {
-  const { userId } = req.params;
-  const citiesIds = await db_all(`SELECT cityId FROM permissions WHERE userId = '${userId}'`);
+  const { googleId } = req.user;
+  const citiesIds = await db_all(`SELECT cityId FROM permissions WHERE userId = '${googleId}'`);
   const cities = await Promise.all(citiesIds.map(({ cityId }) => handleGetCityById(cityId)));
   return cities;
 };
@@ -126,5 +122,4 @@ module.exports = {
   handleEditAttraction,
   handleAddRating,
   handleGetRatingForAttraction,
-  handleAddUser,
 };

@@ -13,12 +13,12 @@ import useCities from '../../useCities';
 // helpers
 import useAttractionForm from './useAttractionForm';
 
-const AttractionsPage: FC<{ token: string }> = ({ token }) => {
+const AttractionsPage: FC = () => {
   const { cityId } = useParams();
   const { useGetAllAttractions, deleteAttraction, editAttraction, addRating } = useAttractions();
   const { data: attractions, isLoading: areAttractionsLoading } = useGetAllAttractions(cityId);
 
-  const { useGetCityById } = useCities({ userId: token });
+  const { useGetCityById } = useCities();
   const selectedCity = useGetCityById(cityId);
 
   const handleDeleteAttraction = (attractionId: number) => {

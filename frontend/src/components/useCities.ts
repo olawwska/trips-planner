@@ -2,21 +2,26 @@ import axios from 'axios';
 import { useMutation, useQueryClient, useQuery } from 'react-query';
 import { CityType } from './types';
 
-const useCities = ({ userId }) => {
+const useCities = () => {
   const queryClient = useQueryClient();
 
   const getAllCities = async () => {
-    const { data } = await axios.get(`http://localhost:8000/getAllCities/${userId}`);
+    const { data } = await axios.get(`http://localhost:8000/getAllCities`, {
+      withCredentials: true,
+    });
     return data;
   };
 
-  const { data: cities, isLoading } = useQuery(['cities', userId], getAllCities);
+  const { data: cities, isLoading } = useQuery('cities', getAllCities);
 
   const useCreateCity = async ({ city }) => {
-    const { data } = await axios.post('http://localhost:8000/addCity', {
-      city: city,
-      userId: userId,
-    });
+    const { data } = await axios.post(
+      'http://localhost:8000/addCity',
+      {
+        city: city,
+      },
+      { withCredentials: true }
+    );
     return data;
   };
 

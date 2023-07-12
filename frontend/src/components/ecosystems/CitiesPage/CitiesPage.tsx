@@ -11,11 +11,11 @@ import CitiesList from './CitiesList';
 // API
 import useCities from '../../useCities';
 
-const CitiesPage: FC<{ token: string }> = ({ token }) => {
+const CitiesPage: FC = () => {
   const navigate = useNavigate();
 
   const [inputVal, setInputVal] = useState<string>('');
-  const { cities, deleteCity, createCity } = useCities({ userId: token });
+  const { cities, deleteCity, createCity } = useCities();
 
   const handleDeleteCity = (cityId: number) => {
     deleteCity(cityId);

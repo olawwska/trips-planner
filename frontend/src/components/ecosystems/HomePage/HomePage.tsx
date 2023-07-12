@@ -1,37 +1,37 @@
-import { useState, FC } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { FC } from 'react';
 //components
-import { Grid } from '@mui/material';
+import { Grid, Button } from '@mui/material';
 // sub-components
-import ListTitle from 'components/atoms/ListTitle';
-import TextFieldPlace from 'components/atoms/TextFieldPlace';
-import ButtonSubmitPlace from 'components/atoms/ButtonSubmitPlace';
-import useUsers from 'components/useUsers';
+import googleIcon from './google-icon.png';
+import logo from './trips-planner-logo.png';
 
-const HomePage: FC<{ setToken: (email: string) => void }> = ({ setToken }) => {
-  const navigate = useNavigate();
-  const [email, setEmail] = useState('');
-  const { addUser } = useUsers();
+const HomePage: FC = () => {
+  const google = () => {
+    window.open('http://localhost:8000/auth/google', '_self');
+  };
 
   return (
-    <Grid container sx={{ width: '50%', margin: '15% auto' }}>
-      <Grid item xs={12}>
-        <ListTitle title="TYPE YOUR EMAIL" />
-      </Grid>
-      <Grid item xs={12}>
-        <TextFieldPlace inputVal={email} setInputVal={setEmail} />
-      </Grid>
-      <Grid item xs={12}>
-        <ButtonSubmitPlace
-          text="SUBMIT"
-          handleSubmit={() => {
-            if (email) {
-              setToken(email);
-              addUser({ userEmail: email });
-              navigate('/cities');
-            }
-          }}
-        />
+    <Grid
+      container
+      sx={{ width: '50%', margin: '15% auto' }}
+      justifyContent="center"
+      justifyItems="center"
+    >
+      <img style={{ transform: 'scale(0.8)', margin: '50px 0' }} src={logo} alt="logo" />
+      <Grid item xs={12} display="flex" justifyContent="center">
+        <Button
+          sx={{ width: '50%' }}
+          onClick={google}
+          startIcon={
+            <img
+              style={{ width: '20px', height: '20px', marginRight: '10px' }}
+              src={googleIcon}
+              alt="logo"
+            />
+          }
+        >
+          Sign in with Google
+        </Button>
       </Grid>
     </Grid>
   );

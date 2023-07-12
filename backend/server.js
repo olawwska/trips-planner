@@ -1,84 +1,33 @@
-let express = require('express');
-let cors = require('cors');
-const {
-  handleGetAllCities,
-  handleAddCity,
-  handleDeleteCity,
-  handleAddAttraction,
-  handleGetAttractionsForCity,
-  handleDeleteAttraction,
-  handleGetCityById,
-  handleEditAttraction,
-  handleAddRating,
-  handleGetRatingForAttraction,
-  handleAddUser,
-} = require('./databaseHandlers');
+require('dotenv').config();
+const cors = require('cors');
+const express = require('express');
+const cookieSession = require('cookie-session');
+const passportSetup = require('./passport');
+const passport = require('passport');
+const authRoute = require('./routes/auth');
+const citiesRoute = require('./routes/cities');
+const attractionsRoute = require('./routes/attractions');
 
 let app = express();
 
-app.use(cors());
-
 app.use(express.json());
 
-app.post('/addCity', async (req, res) => {
-  const result = await handleAddCity(req);
-  res.send({ result });
-});
+app.use(cookieSession({ name: 'session', keys: ['openreplay'], maxAge: 24 * 60 * 60 * 100 }));
+app.use(passport.initialize());
 
-app.post('/addAttraction', async (req, res) => {
-  const result = await handleAddAttraction(req);
-  res.send({ result });
-});
+app.use(passport.session());
 
-app.post('/addUser', async (req, res) => {
-  const result = await handleAddUser(req);
-  res.send({ result });
-});
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,POST,PUT,DELETE',
+    credentials: true,
+  })
+);
 
-app.get('/getAllCities/:userId', async (req, res) => {
-  const result = await handleGetAllCities(req);
-  res.send(result);
-});
-
-app.get('/getAllAttractions/:cityId', async (req, res) => {
-  const result = await handleGetAttractionsForCity(req);
-  const attractionsWithRating = await Promise.all(
-    result?.map(async (attraction) => {
-      const ratingResult = await handleGetRatingForAttraction(attraction.id);
-      return {
-        ...attraction,
-        rating: ratingResult,
-      };
-    })
-  );
-  res.send(attractionsWithRating);
-});
-
-app.put('/editAttraction', async (req, res) => {
-  const result = await handleEditAttraction(req);
-  res.send({ result });
-});
-
-app.put('/addRating', async (req, res) => {
-  const result = await handleAddRating(req);
-  res.send(result);
-});
-
-app.delete('/deleteCity/:cityId', async (req, res) => {
-  const result = await handleDeleteCity(req);
-  res.send(result);
-});
-
-app.delete('/deleteAttraction/:attractionId', async (req, res) => {
-  const result = await handleDeleteAttraction(req);
-  res.send(result);
-});
-
-app.get('/getCityById/:cityId', async (req, res) => {
-  const { cityId } = req.params;
-  const result = await handleGetCityById(cityId);
-  res.send(result);
-});
+app.use('/auth', authRoute);
+app.use(citiesRoute);
+app.use(attractionsRoute);
 
 app.listen(8000, function () {});
 
