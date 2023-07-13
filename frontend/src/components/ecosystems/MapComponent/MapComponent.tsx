@@ -1,4 +1,4 @@
-import { FC, useState, useMemo } from 'react';
+import { FC, useState, useMemo, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   useLoadScript,
@@ -8,7 +8,7 @@ import {
   InfoWindowF,
 } from '@react-google-maps/api';
 // components
-import { Grid } from '@mui/material';
+import { Grid, CircularProgress } from '@mui/material';
 // subcomponents
 import MapInfoWindow from './MapInfoWindow';
 import TextFieldPlace from '../../atoms/TextFieldPlace';
@@ -70,19 +70,20 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
   const onLoad = (autocomplete) => {
     setSearchResult(autocomplete);
   };
+
   const [mapRef, setMapRef] = useState<any>();
 
   const setNewBounds = () => {
-    const bounds = new google.maps.LatLngBounds();
-    attractions.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
-    mapRef?.fitBounds(bounds);
+    if (attractions?.length) {
+      const bounds = new google.maps.LatLngBounds();
+      attractions.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
+      mapRef?.fitBounds(bounds);
+    }
   };
 
   const onLoadMap = (map) => {
     setMapRef(map);
-    if (attractions?.length) {
-      setNewBounds();
-    }
+    setNewBounds();
   };
 
   const onAttractionChange = () => {
@@ -92,14 +93,19 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
         name: place.name,
         lat: place.geometry?.location?.lat(),
         lng: place.geometry?.location?.lng(),
-        photo: place.photos[0]?.getUrl(),
+        photo: place.photos && place.photos[0]?.getUrl(),
         attraction: place.attraction,
         website: place.website,
       };
       handleAddAttraction(placeInfo);
-      setNewBounds();
     }
   };
+
+  useEffect(() => {
+    if (mapRef) {
+      setNewBounds();
+    }
+  }, [attractions.length, mapRef]);
 
   const handleMarkerClick = ({
     attractionId,
@@ -125,7 +131,15 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
   return (
     <Grid item xs={6} style={{ height: '100vh' }}>
       {!isLoaded ? (
-        <>isLoading</>
+        <Grid
+          container
+          display="flex"
+          justifyContent="center"
+          alignContent="center"
+          style={{ height: '100vh' }}
+        >
+          <CircularProgress />
+        </Grid>
       ) : (
         <GoogleMap mapContainerClassName={classes.map} center={center} zoom={10} onLoad={onLoadMap}>
           <Autocomplete

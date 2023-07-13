@@ -34,12 +34,11 @@ const HomePage: FC = () => {
   const redirectToGoogleSSO = async () => {
     let timer: NodeJS.Timeout | null = null;
     const googleLoginURL = 'http://localhost:8000/auth/google';
-    const newWindow = window.open(googleLoginURL, '_blank', 'toolbar=0,location=0,menubar=0');
+    const newWindow = window.open(googleLoginURL, '_self');
 
     if (newWindow) {
       timer = setInterval(() => {
         if (newWindow.closed) {
-          console.log("Yay we're authenticated");
           fetchAuthUser();
           if (timer) clearInterval(timer);
         }

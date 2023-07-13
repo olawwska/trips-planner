@@ -12,7 +12,7 @@ const useCities = () => {
     return data;
   };
 
-  const { data: cities, isLoading } = useQuery('cities', getAllCities);
+  const { data: cities, isLoading: areCitiesLoading } = useQuery('cities', getAllCities);
 
   const useCreateCity = async ({ city }) => {
     const { data } = await axios.post(
@@ -73,7 +73,7 @@ const useCities = () => {
 
   return {
     cities,
-    areCitiesLoading: isLoading,
+    areCitiesLoading,
     createCity,
     deleteCity,
     useGetCityById,

@@ -7,6 +7,7 @@ const {
   handleAddRating,
   handleDeleteAttraction,
 } = require('../databaseHandlers');
+const { isUserAuthenticated } = require('../middlewares/auth');
 
 router.post('/addAttraction', async (req, res) => {
   const result = await handleAddAttraction(req);
@@ -15,16 +16,7 @@ router.post('/addAttraction', async (req, res) => {
 
 router.get('/getAllAttractions/:cityId', async (req, res) => {
   const result = await handleGetAttractionsForCity(req);
-  const attractionsWithRating = await Promise.all(
-    result?.map(async (attraction) => {
-      const ratingResult = await handleGetRatingForAttraction(attraction.id);
-      return {
-        ...attraction,
-        rating: ratingResult,
-      };
-    })
-  );
-  res.send(attractionsWithRating);
+  res.send(result);
 });
 
 router.put('/editAttraction', async (req, res) => {
@@ -32,7 +24,7 @@ router.put('/editAttraction', async (req, res) => {
   res.send({ result });
 });
 
-router.put('/addRating', async (req, res) => {
+router.put('/addRating', isUserAuthenticated, async (req, res) => {
   const result = await handleAddRating(req);
   res.send(result);
 });

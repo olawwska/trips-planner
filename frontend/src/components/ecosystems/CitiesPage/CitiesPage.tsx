@@ -17,7 +17,7 @@ const CitiesPage: FC = () => {
   const navigate = useNavigate();
 
   const [inputVal, setInputVal] = useState<string>('');
-  const { cities, deleteCity, createCity } = useCities();
+  const { cities, deleteCity, createCity, areCitiesLoading } = useCities();
 
   const handleDeleteCity = (cityId: number) => {
     deleteCity(cityId);
@@ -34,42 +34,57 @@ const CitiesPage: FC = () => {
   };
 
   return (
-    <Grid container display="flex" margin="auto" alignItems="center" height="100vh" width="50vw">
-      {Boolean(cities?.length) ? (
-        <Grid container>
-          <ListTitle title={'Cities list'} />
-          <CitiesList
-            cities={cities}
-            onHandleDelete={handleDeleteCity}
-            onHandleClick={onHandleClick}
-          />
-          <Grid item xs={12}>
-            <TextFieldPlace label={'Type a city'} setInputVal={setInputVal} inputVal={inputVal} />
-          </Grid>
-          <Grid item xs={12}>
-            <ButtonSubmitPlace handleSubmit={handleAddCity} text={'Add a city'} />
-          </Grid>
+    <>
+      {!areCitiesLoading && (
+        <Grid
+          container
+          display="flex"
+          margin="auto"
+          alignItems="center"
+          height="100vh"
+          width="50vw"
+        >
+          {Boolean(cities?.length) ? (
+            <Grid container>
+              <ListTitle title={'Cities list'} />
+              <CitiesList
+                cities={cities}
+                onHandleDelete={handleDeleteCity}
+                onHandleClick={onHandleClick}
+              />
+              <Grid item xs={12}>
+                <TextFieldPlace
+                  label={'Type a city'}
+                  setInputVal={setInputVal}
+                  inputVal={inputVal}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <ButtonSubmitPlace handleSubmit={handleAddCity} text={'Add a city'} />
+              </Grid>
+            </Grid>
+          ) : (
+            <NoPlacesPage
+              inputVal={inputVal}
+              setInputVal={setInputVal}
+              label={'Add city'}
+              title={
+                <Box>
+                  <Typography
+                    variant="h2"
+                    style={{ color: 'rgb(254, 80, 0)', display: 'inline' }}
+                  >{`Hi ${state.authenticatedUserName}! `}</Typography>
+                  <Typography variant="h2" style={{ display: 'inline' }}>
+                    There are no cities added yet
+                  </Typography>
+                </Box>
+              }
+              onHandleSubmit={handleAddCity}
+            />
+          )}
         </Grid>
-      ) : (
-        <NoPlacesPage
-          inputVal={inputVal}
-          setInputVal={setInputVal}
-          label={'Add city'}
-          title={
-            <Box>
-              <Typography
-                variant="h2"
-                style={{ color: 'rgb(254, 80, 0)', display: 'inline' }}
-              >{`Hi ${state.authenticatedUserName}! `}</Typography>
-              <Typography variant="h2" style={{ display: 'inline' }}>
-                There are no cities added yet
-              </Typography>
-            </Box>
-          }
-          onHandleSubmit={handleAddCity}
-        />
       )}
-    </Grid>
+    </>
   );
 };
 

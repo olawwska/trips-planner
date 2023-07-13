@@ -6,7 +6,9 @@ const useAttractions = () => {
   const queryClient = useQueryClient();
 
   const getAllAttractions = async (cityId: string) => {
-    const { data } = await axios.get(`http://localhost:8000/getAllAttractions/${cityId}`);
+    const { data } = await axios.get(`http://localhost:8000/getAllAttractions/${cityId}`, {
+      withCredentials: true,
+    });
     return data;
   };
 
@@ -75,10 +77,14 @@ const useAttractions = () => {
   });
 
   const useAddRating = async ({ attractionId, rating }) => {
-    const { data } = await axios.put(`http://localhost:8000/addRating`, {
-      attractionId: attractionId,
-      rating: rating,
-    });
+    const { data } = await axios.put(
+      `http://localhost:8000/addRating`,
+      {
+        attractionId: attractionId,
+        rating: rating,
+      },
+      { withCredentials: true }
+    );
     return data;
   };
 

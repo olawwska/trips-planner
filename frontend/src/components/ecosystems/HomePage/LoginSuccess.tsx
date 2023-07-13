@@ -3,11 +3,13 @@ import { useEffect } from 'react';
 import { Grid, Typography } from '@mui/material';
 // logo
 import logo from './trips-planner-logo.png';
+import { useNavigate } from 'react-router-dom';
 
 const LoginSuccess = () => {
+  const navigate = useNavigate();
   useEffect(() => {
     setTimeout(() => {
-      window.close();
+      navigate('/cities');
     }, 2000);
   });
 

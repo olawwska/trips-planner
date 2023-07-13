@@ -1,10 +1,5 @@
 const { db, db_all, db_each, db_run, db_get } = require('./helpers');
 
-// db.run('DROP TABLE IF EXISTS attractionsRating');
-// db.run('DROP TABLE IF EXISTS attractions');
-// db.run('DROP TABLE IF EXISTS cities');
-// db.run('DROP TABLE IF EXISTS users');
-// db.run('DROP TABLE IF EXISTS permissions');
 db.serialize(() => {
   db_run('CREATE TABLE IF NOT EXISTS cities(cityId integer primary key, city text)');
 });
@@ -17,7 +12,7 @@ db.serialize(() => {
 
 db.serialize(() => {
   db_run(
-    'CREATE TABLE IF NOT EXISTS attractionsRating(attractionId integer, userId integer PRIMARY KEY, rating real)'
+    'CREATE TABLE IF NOT EXISTS attractionsRating(attractionId integer, userId text PRIMARY KEY, rating real)'
   );
 });
 
@@ -36,7 +31,18 @@ const handleGetAttractionsForCity = async (req) => {
   const attractionsForACity = await db_all(
     `SELECT attractionId,attraction,lat,lng,photo,website FROM attractions WHERE cityId = '${cityId}'`
   );
-  return attractionsForACity;
+  const attractionsWithRating = await Promise.all(
+    attractionsForACity.map(async (attraction) => {
+      const attrRating = await db_get(
+        `SELECT rating from attractionsRating WHERE attractionId = '${attraction.attractionId}'`
+      );
+      return {
+        rating: attrRating?.rating,
+        ...attraction,
+      };
+    })
+  );
+  return attractionsWithRating;
 };
 
 const handleGetRatingForAttraction = (attractionId) => {
@@ -75,9 +81,10 @@ const handleAddAttraction = (req) => {
 };
 
 const handleAddRating = (req) => {
+  const { googleId } = req.user;
   const { attractionId, rating } = req.body;
   db_run(
-    `INSERT OR REPLACE INTO attractionsRating(attractionId,rating) VALUES('${attractionId}','${rating}')`
+    `INSERT OR REPLACE INTO attractionsRating(attractionId,rating,userId) VALUES('${attractionId}','${rating}','${googleId}')`
   );
 };
 
