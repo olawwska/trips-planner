@@ -9,7 +9,7 @@ router.get(
   '/google/callback',
   passport.authenticate('google', {
     successRedirect: `${CLIENT_URL}login/success`,
-    failureRedirect: '/login/failed',
+    failureRedirect: '/login/error',
   }),
   (req, res) => {
     res.send('Thank you for signing in!');

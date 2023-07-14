@@ -11,6 +11,7 @@ const TextFieldPlace: FC<{
 }> = ({ label, inputVal, setInputVal, mapTextField }) => {
   return (
     <TextField
+      autoComplete="off"
       sx={mapTextField ? { width: '60%', marginLeft: '30%', top: '-12px' } : {}}
       label={label}
       value={inputVal}

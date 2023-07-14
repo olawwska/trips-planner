@@ -18,23 +18,23 @@ const HomePage: FC = () => {
       .catch((err) => {
         console.log(err);
         dispatch({ type: 'AUTHENTICATE_USER', isAuthenticated: false, authenticatedUserName: '' });
-        // navigate('/login/error');
+        navigate('/login/error');
       });
 
     if (response && response.data) {
-      navigate('/cities');
       dispatch({
         type: 'AUTHENTICATE_USER',
         isAuthenticated: true,
         authenticatedUserName: response.data,
       });
+      navigate('/cities');
     }
   };
 
   const redirectToGoogleSSO = async () => {
     let timer: NodeJS.Timeout | null = null;
     const googleLoginURL = 'http://localhost:8000/auth/google';
-    const newWindow = window.open(googleLoginURL, '_self');
+    const newWindow = window.open(googleLoginURL, '_blank');
 
     if (newWindow) {
       timer = setInterval(() => {

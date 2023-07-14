@@ -4,11 +4,11 @@ import { Grid, Typography } from '@mui/material';
 // logo
 import logo from './trips-planner-logo.png';
 
-const LoginSuccess = () => {
+const LoginError = () => {
   useEffect(() => {
     setTimeout(() => {
       window.close();
-    }, 3000);
+    }, 1000);
   });
 
   return (
@@ -23,10 +23,10 @@ const LoginSuccess = () => {
       <Grid item>
         <img style={{ transform: 'scale(0.8)', marginBottom: '20px' }} src={logo} alt="logo" />
         <Typography variant="h2" align="center">
-          Thanks for logging in!
+          There was an error while logging in
         </Typography>
       </Grid>
     </Grid>
   );
 };
-export default LoginSuccess;
+export default LoginError;
