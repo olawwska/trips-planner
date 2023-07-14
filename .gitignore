@@ -23,7 +23,7 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 node_modules
-/backend/testdb.db
+/backend/appdb.db
 
 /frontend/.env
 /backend/.env

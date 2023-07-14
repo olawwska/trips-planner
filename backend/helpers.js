@@ -1,11 +1,11 @@
 let sqlite3 = require('sqlite3').verbose();
 
-let db = new sqlite3.Database('testdb.db', (err) => {
+let db = new sqlite3.Database('appdb.db', (err) => {
   if (err) {
     console.log(err);
     throw err;
   }
-  console.log('Connected to the in-memory SQLite database.');
+  console.log('Connected to the SQLite database.');
 });
 
 async function db_all(query) {
