@@ -1,4 +1,4 @@
-import { FC, useState, useMemo, useEffect } from 'react';
+import { FC, useState, useMemo, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import {
   useLoadScript,
@@ -73,13 +73,13 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
 
   const [mapRef, setMapRef] = useState<any>();
 
-  const setNewBounds = () => {
+  const setNewBounds = useCallback(() => {
     if (attractions?.length) {
       const bounds = new google.maps.LatLngBounds();
       attractions.forEach(({ lat, lng }) => bounds.extend({ lat, lng }));
       mapRef?.fitBounds(bounds);
     }
-  };
+  }, [attractions, mapRef]);
 
   const onLoadMap = (map) => {
     setMapRef(map);
@@ -105,7 +105,7 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
     if (mapRef) {
       setNewBounds();
     }
-  }, [attractions.length, mapRef]);
+  }, [attractions.length, mapRef, setNewBounds]);
 
   const handleMarkerClick = ({
     attractionId,

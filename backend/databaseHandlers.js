@@ -12,7 +12,7 @@ db.serialize(() => {
 
 db.serialize(() => {
   db_run(
-    'CREATE TABLE IF NOT EXISTS attractionsRating(attractionId integer, userId text PRIMARY KEY, rating real)'
+    'CREATE TABLE IF NOT EXISTS attractionsRating(attractionId integer, userId text, rating real, PRIMARY KEY(attractionId, userId))'
   );
 });
 
@@ -28,13 +28,14 @@ db.serialize(() => {
 
 const handleGetAttractionsForCity = async (req) => {
   const cityId = req.params.cityId;
+  const { googleId } = req.user;
   const attractionsForACity = await db_all(
     `SELECT attractionId,attraction,lat,lng,photo,website FROM attractions WHERE cityId = '${cityId}'`
   );
   const attractionsWithRating = await Promise.all(
     attractionsForACity.map(async (attraction) => {
       const attrRating = await db_get(
-        `SELECT rating from attractionsRating WHERE attractionId = '${attraction.attractionId}'`
+        `SELECT rating from attractionsRating WHERE attractionId = '${attraction.attractionId}' AND userId = '${googleId}'`
       );
       return {
         rating: attrRating?.rating,

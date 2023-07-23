@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  backend:
+    build: ./backend
+    restart: unless-stopped
+    volumes:
+      - sqlite-db:/backend/appdb.db
+    ports:
+      - 8000:8000
+    env_file:
+      - ./backend/.env
+    networks:
+      - frontend
+  frontend:
+    build: ./frontend
+    env_file:
+      - ./frontend/.env
+    ports:
+      - 3000:3000
+    networks:
+      - frontend
+
+volumes:
+  sqlite-db:
+
+networks:
+  frontend:
