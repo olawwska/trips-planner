@@ -6,18 +6,24 @@ const {
   // handleDeleteCity,
   // handleGetCityById,
 } = require('../databaseHandlers');
-const { City } = require('../db/models');
+const { City, Permission } = require('../db/models');
 
 router.get('/cities', async (req, res, next) => {
-  // const { googleId } = req.user;
-  // console.log(googleId);
-  const allCities = await City.findAll();
+  const { googleId } = req.user;
+  const permissions = await Permission.findAll(
+    { attributes: ['cityId'] },
+    { where: { googleId: googleId } }
+  );
+
+  const allCities = await Promise.all(permissions.map(async (p) => await City.findByPk(p.cityId)));
   res.json(allCities);
 });
 
 router.post('/cities', async (req, res, next) => {
   const { city } = req.body;
+  const { googleId } = req.user;
   const newCity = await City.create({ city });
+  await Permission.create({ cityId: newCity.id, googleId });
   res.json(newCity);
 });
 

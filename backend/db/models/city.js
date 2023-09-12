@@ -8,6 +8,11 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: 'CASCADE',
         hooks: true,
       });
+      City.hasMany(models.Permission, {
+        foreignKey: 'cityId',
+        onDelete: 'CASCADE',
+        hooks: true,
+      });
     }
   }
   City.init(
