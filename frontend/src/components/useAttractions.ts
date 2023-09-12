@@ -6,7 +6,7 @@ const useAttractions = () => {
   const queryClient = useQueryClient();
 
   const getAllAttractions = async (cityId: string) => {
-    const { data } = await axios.get(`http://localhost:8000/getAllAttractions/${cityId}`, {
+    const { data } = await axios.get(`http://localhost:8000/${cityId}/attractions`, {
       withCredentials: true,
     });
     return data;
@@ -23,7 +23,7 @@ const useAttractions = () => {
   };
 
   const useDeleteAttraction = async (attractionId: number) => {
-    const { data } = await axios.delete(`http://localhost:8000/deleteAttraction/${attractionId}`);
+    const { data } = await axios.delete(`http://localhost:8000/attractions/${attractionId}`);
     return data;
   };
 
@@ -40,7 +40,7 @@ const useAttractions = () => {
   });
 
   const useAddAttraction = async (attraction: IAttractionPayloadType) => {
-    const { data } = await axios.post(`http://localhost:8000/addAttraction`, attraction);
+    const { data } = await axios.post(`http://localhost:8000/attractions`, attraction);
     return data;
   };
 
@@ -56,9 +56,9 @@ const useAttractions = () => {
     },
   });
 
-  const useEditAttraction = async ({ attractionId, attraction }: AttractionFormType) => {
-    const { data } = await axios.put(`http://localhost:8000/editAttraction`, {
-      attractionId: attractionId,
+  const useEditAttraction = async ({ id, attraction }: AttractionFormType) => {
+    const { data } = await axios.put(`http://localhost:8000/attractions`, {
+      id,
       attraction: attraction,
     });
     return data;

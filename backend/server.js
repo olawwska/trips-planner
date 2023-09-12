@@ -29,7 +29,7 @@ app.use('/auth', authRoute);
 app.use(citiesRoute);
 app.use(attractionsRoute);
 
-app.listen(8000, function () {});
+app.listen(5001, function () {});
 
 process.on('SIGINT', function () {
   console.log('\nGracefully shutting down from SIGINT (Ctrl-C)');

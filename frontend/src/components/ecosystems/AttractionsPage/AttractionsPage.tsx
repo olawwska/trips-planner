@@ -29,7 +29,7 @@ const AttractionsPage: FC = () => {
 
   const handleFormSubmit = () => {
     editAttraction(attractionForm);
-    setAttractionForm({ attractionId: undefined, attraction: '' });
+    setAttractionForm({ id: undefined, attraction: '' });
     setIsOpenDialog(false);
   };
 

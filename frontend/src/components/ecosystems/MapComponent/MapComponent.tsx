@@ -1,5 +1,4 @@
 import { FC, useState, useMemo, useEffect, useCallback } from 'react';
-import { useParams } from 'react-router-dom';
 import {
   useLoadScript,
   GoogleMap,
@@ -30,7 +29,6 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
 }) => {
   const classes = useStyles();
   const { state: infoWindowData, dispatch } = useContext();
-  const { cityId = '' } = useParams();
   const [inputVal, setInputVal] = useState('');
 
   const { isLoaded } = useLoadScript({
@@ -55,7 +53,7 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
   const handleAddAttraction = (placeInfo: IPlaceType) => {
     const attraction = {
       attraction: placeInfo.name,
-      cityId: parseInt(cityId),
+      cityId: selectedCity.id,
       lat: placeInfo.lat,
       lng: placeInfo.lng,
       photo: placeInfo?.photo,
@@ -107,18 +105,11 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
     }
   }, [attractions.length, mapRef, setNewBounds]);
 
-  const handleMarkerClick = ({
-    attractionId,
-    lat,
-    lng,
-    photo,
-    attraction,
-    website,
-  }: IAttractionType) => {
+  const handleMarkerClick = ({ id, lat, lng, photo, attraction, website }: IAttractionType) => {
     mapRef?.panTo({ lat, lng });
     dispatch({
       type: 'CHANGE_ALL_ATTRACTION_INFO',
-      attractionId: attractionId,
+      attractionId: id,
       lat: lat,
       lng: lng,
       photo: photo,
@@ -149,15 +140,15 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
           >
             <TextFieldPlace setInputVal={setInputVal} inputVal={inputVal} mapTextField />
           </Autocomplete>
-          {attractions.map(({ lat, lng, attractionId, photo, attraction, website }) => (
+          {attractions.map(({ lat, lng, id, photo, attraction, website }) => (
             <MarkerF
-              key={attractionId}
+              key={id}
               position={{ lat: lat, lng: lng }}
               onClick={() => {
-                handleMarkerClick({ attractionId, lat, lng, photo, attraction, website });
+                handleMarkerClick({ id, lat, lng, photo, attraction, website });
               }}
             >
-              {infoWindowData.isOpen && infoWindowData?.attractionId === attractionId && (
+              {infoWindowData.isOpen && infoWindowData?.id === id && (
                 <InfoWindowF
                   onCloseClick={() => {
                     dispatch({ type: 'CLOSE_INFO_WINDOW' });

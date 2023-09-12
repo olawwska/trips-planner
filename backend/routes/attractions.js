@@ -1,37 +1,54 @@
 const router = require('express').Router();
 const {
-  handleAddAttraction,
-  handleGetAttractionsForCity,
-  handleGetRatingForAttraction,
-  handleEditAttraction,
-  handleAddRating,
-  handleDeleteAttraction,
+  // handleAddAttraction,
+  // handleGetAttractionsForCity,
+  // handleGetRatingForAttraction,
+  // handleEditAttraction,
+  // handleAddRating,
+  // handleDeleteAttraction,
 } = require('../databaseHandlers');
-const { isUserAuthenticated } = require('../middlewares/auth');
+// const { isUserAuthenticated } = require('../middlewares/auth');
+const { City, Attraction } = require('../db/models');
 
-router.post('/addAttraction', async (req, res) => {
-  const result = await handleAddAttraction(req);
-  res.send({ result });
+router.get('/:cityId/attractions', async (req, res, next) => {
+  const { cityId } = req.params;
+  const city = await City.findByPk(cityId);
+  const attractions = await city.getAttractions();
+  res.json(attractions);
 });
 
-router.get('/getAllAttractions/:cityId', async (req, res) => {
-  const result = await handleGetAttractionsForCity(req);
-  res.send(result);
+router.post('/attractions', async (req, res, next) => {
+  const { cityId } = req.body;
+  const attractionPayload = req.body;
+  const city = await City.findByPk(cityId);
+  const attraction = await city.createAttraction({
+    cityId,
+    attraction: attractionPayload.attraction,
+    lat: attractionPayload.lat,
+    lng: attractionPayload.lng,
+  });
+
+  res.json({ message: 'Attraction created', body: attraction });
 });
 
-router.put('/editAttraction', async (req, res) => {
-  const result = await handleEditAttraction(req);
-  res.send({ result });
+router.delete('/attractions/:attractionId', async (req, res, next) => {
+  const { attractionId } = req.params;
+  const attraction = await Attraction.findByPk(attractionId);
+  const removedAttraction = await attraction.destroy();
+  res.json({ message: 'Attraction removed', body: removedAttraction });
 });
 
-router.put('/addRating', isUserAuthenticated, async (req, res) => {
-  const result = await handleAddRating(req);
-  res.send(result);
+router.put('/attractions', async (req, res, next) => {
+  const { id: attractionId, attraction } = req.body;
+  const attractionToUpdate = await Attraction.findByPk(attractionId);
+  attractionToUpdate.attraction = attraction;
+  await attractionToUpdate.save();
+  res.json({ message: `Attraction id: ${attractionId} updated` });
 });
 
-router.delete('/deleteAttraction/:attractionId', async (req, res) => {
-  const result = await handleDeleteAttraction(req);
-  res.send(result);
-});
+// router.put('/addRating', isUserAuthenticated, async (req, res) => {
+//   const result = await handleAddRating(req);
+//   res.send(result);
+// });
 
 module.exports = router;

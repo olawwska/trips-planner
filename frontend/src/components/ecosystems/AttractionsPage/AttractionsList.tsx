@@ -30,16 +30,16 @@ const AttractionsList: FC<{
         variant="outlined"
       >
         <List>
-          {attractions?.map(({ attractionId, attraction, lat, lng, photo, website, rating }) => (
+          {attractions?.map(({ id, attraction, lat, lng, photo, website, rating }) => (
             <PlaceListItem
-              key={attractionId}
-              id={attractionId}
+              key={id}
+              id={id}
               onDelete={onHandleDelete}
               name={attraction || ''}
               onHandleFocus={() => {
                 dispatch({
                   type: 'CHANGE_ALL_ATTRACTION_INFO',
-                  attractionId: attractionId,
+                  attractionId: id,
                   lat: lat,
                   lng: lng,
                   photo: photo,
