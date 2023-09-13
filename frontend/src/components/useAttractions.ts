@@ -77,10 +77,9 @@ const useAttractions = () => {
   });
 
   const useAddRating = async ({ attractionId, rating }) => {
-    const { data } = await axios.put(
-      `http://localhost:8000/addRating`,
+    const { data } = await axios.post(
+      `http://localhost:8000/rating/${attractionId}`,
       {
-        attractionId: attractionId,
         rating: rating,
       },
       { withCredentials: true }

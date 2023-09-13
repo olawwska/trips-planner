@@ -1,4 +1,5 @@
 const router = require('express').Router();
+const sequelize = require('sequelize');
 const {
   // handleAddAttraction,
   // handleGetAttractionsForCity,
@@ -7,20 +8,32 @@ const {
   // handleAddRating,
   // handleDeleteAttraction,
 } = require('../databaseHandlers');
-// const { isUserAuthenticated } = require('../middlewares/auth');
-const { City, Attraction } = require('../db/models');
+const { isUserAuthenticated } = require('../middlewares/auth');
+const { City, Attraction, AttractionsRating } = require('../db/models');
 
 router.get('/:cityId/attractions', async (req, res, next) => {
   const { cityId } = req.params;
-  const city = await City.findByPk(cityId);
-  const attractions = await city.getAttractions();
-  res.json(attractions);
+  const attractionsWithRating = await Attraction.findAll({
+    where: { cityId: cityId },
+    attributes: {
+      include: [[sequelize.fn('AVG', sequelize.col('AttractionsRatings.rating')), 'rating']],
+    },
+    include: {
+      model: AttractionsRating,
+      attributes: [],
+    },
+    raw: true,
+    group: ['Attraction.id'],
+  });
+
+  res.json(attractionsWithRating);
 });
 
 router.post('/attractions', async (req, res, next) => {
   const { cityId } = req.body;
   const attractionPayload = req.body;
   const city = await City.findByPk(cityId);
+
   const attraction = await city.createAttraction({
     cityId,
     attraction: attractionPayload.attraction,
@@ -46,9 +59,30 @@ router.put('/attractions', async (req, res, next) => {
   res.json({ message: `Attraction id: ${attractionId} updated` });
 });
 
-// router.put('/addRating', isUserAuthenticated, async (req, res) => {
-//   const result = await handleAddRating(req);
-//   res.send(result);
-// });
+router.post('/rating/:attractionId', isUserAuthenticated, async (req, res, next) => {
+  const { googleId } = req.user;
+  const { rating } = req.body;
+  const { attractionId } = req.params;
+  const attraction = await Attraction.findByPk(attractionId);
+  const attractionRating = await AttractionsRating.findOne({
+    where: { attractionId: attractionId },
+  });
+  if (!Boolean(attractionRating)) {
+    try {
+      const newAttractionsRating = await attraction.createAttractionsRating({
+        attractionId: parseInt(attractionId),
+        rating: rating,
+        googleId: parseInt(googleId),
+      });
+
+      return res
+        .status(200)
+        .json({ message: 'Attractions rating added', body: { newAttractionsRating } });
+    } catch {
+      console.log(err, req.body);
+      return res.status(404).json({ message: 'Failed to add rating' });
+    }
+  }
+});
 
 module.exports = router;

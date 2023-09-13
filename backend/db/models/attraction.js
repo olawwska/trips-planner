@@ -6,6 +6,11 @@ module.exports = (sequelize, DataTypes) => {
       Attraction.belongsTo(models.City, {
         foreignKey: 'cityId',
       });
+      Attraction.hasMany(models.AttractionsRating, {
+        foreignKey: 'attractionId',
+        onDelete: 'CASCADE',
+        hooks: true,
+      });
     }
   }
   Attraction.init(
