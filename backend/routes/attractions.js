@@ -1,13 +1,5 @@
 const router = require('express').Router();
 const sequelize = require('sequelize');
-const {
-  // handleAddAttraction,
-  // handleGetAttractionsForCity,
-  // handleGetRatingForAttraction,
-  // handleEditAttraction,
-  // handleAddRating,
-  // handleDeleteAttraction,
-} = require('../databaseHandlers');
 const { isUserAuthenticated } = require('../middlewares/auth');
 const { City, Attraction, AttractionsRating } = require('../db/models');
 

@@ -1,14 +1,10 @@
 const router = require('express').Router();
-// const { isUserAuthenticated } = require('../middlewares/auth');
-const {
-  // handleAddCity,
-  // handleGetAllCities,
-  // handleDeleteCity,
-  // handleGetCityById,
-} = require('../databaseHandlers');
+const { isUserAuthenticated } = require('../middlewares/auth');
+const {} = require('../databaseHandlers');
 const { City, Permission } = require('../db/models');
+const { isUserAuthenticated } = require('../middlewares/auth');
 
-router.get('/cities', async (req, res, next) => {
+router.get('/cities', isUserAuthenticated, async (req, res, next) => {
   const { googleId } = req.user;
   const permissions = await Permission.findAll(
     { attributes: ['cityId'] },
