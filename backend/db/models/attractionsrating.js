@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       googleId: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING,
       },
     },
     {

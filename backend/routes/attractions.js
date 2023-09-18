@@ -56,25 +56,36 @@ router.post('/rating/:attractionId', isUserAuthenticated, async (req, res, next)
   const { rating } = req.body;
   const { attractionId } = req.params;
   const attraction = await Attraction.findByPk(attractionId);
-  const attractionRating = await AttractionsRating.findOne({
-    where: { attractionId: attractionId },
-  });
-  if (!Boolean(attractionRating)) {
-    try {
-      const newAttractionsRating = await attraction.createAttractionsRating({
-        attractionId: parseInt(attractionId),
-        rating: rating,
-        googleId: parseInt(googleId),
-      });
+  try {
+    const newAttractionsRating = await attraction.createAttractionsRating({
+      attractionId: attractionId,
+      rating: rating,
+      googleId: googleId,
+    });
 
-      return res
-        .status(200)
-        .json({ message: 'Attractions rating added', body: { newAttractionsRating } });
-    } catch {
-      console.log(err, req.body);
-      return res.status(404).json({ message: 'Failed to add rating' });
-    }
+    return res
+      .status(200)
+      .json({ message: 'Attractions rating added', body: { newAttractionsRating } });
+  } catch {
+    console.log(err, req.body);
+    return res.status(404).json({ message: 'Failed to add rating' });
   }
+});
+
+router.put('/rating/:attractionId', isUserAuthenticated, async (req, res, next) => {
+  const { googleId } = req.user;
+  const { rating } = req.body;
+  const { attractionId } = req.params;
+  const attractionRatingToUpdate = await AttractionsRating.findOne({
+    where: {
+      attractionId: attractionId,
+      googleId: googleId,
+    },
+  });
+
+  attractionRatingToUpdate.rating = rating;
+  attractionRatingToUpdate.save();
+  res.json({ message: `Attraction rating updated`, body: attractionRatingToUpdate });
 });
 
 module.exports = router;

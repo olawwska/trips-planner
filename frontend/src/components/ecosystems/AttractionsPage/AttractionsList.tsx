@@ -14,7 +14,15 @@ const AttractionsList: FC<{
   setIsOpenDialog: (isOpen: boolean) => void;
   setAttractionForm: (state: AttractionFormType) => void;
   addRating: ({ attractionId, rating }) => void;
-}> = ({ attractions, onHandleDelete, setIsOpenDialog, setAttractionForm, addRating }) => {
+  editRating: ({ attractionId, rating }) => void;
+}> = ({
+  attractions,
+  onHandleDelete,
+  setIsOpenDialog,
+  setAttractionForm,
+  addRating,
+  editRating,
+}) => {
   const { dispatch } = useContext();
 
   return (
@@ -53,7 +61,7 @@ const AttractionsList: FC<{
               }}
               setIsOpenDialog={setIsOpenDialog}
               setAttractionForm={setAttractionForm}
-              addRating={addRating}
+              addRating={rating ? editRating : addRating}
               rating={rating ?? null}
             />
           ))}
