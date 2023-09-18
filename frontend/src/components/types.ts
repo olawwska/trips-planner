@@ -1,6 +1,6 @@
 export interface CityType {
   city: string;
-  cityId: number;
+  id: number;
 }
 
 export type PlaceListItemType = {
@@ -38,11 +38,11 @@ export interface IAttractionPayloadType extends Coordinates, PlaceInfo {
 }
 
 export interface IAttractionType extends IAttractionPayloadType {
-  attractionId: number;
+  id: number;
 }
 
 export interface IInfoWindowDataType extends PlaceInfo {
-  attractionId: number;
+  id: number;
 }
 
 export type TripsPlannerActionsType =
@@ -83,5 +83,5 @@ export interface TripsPlannerStateType extends IInfoWindowDataType, Coordinates 
 
 export type AttractionFormType = {
   attraction: string;
-  attractionId?: number;
+  id?: number;
 };

@@ -6,7 +6,7 @@ const useCities = () => {
   const queryClient = useQueryClient();
 
   const getAllCities = async () => {
-    const { data } = await axios.get(`http://localhost:8000/getAllCities`, {
+    const { data } = await axios.get(`http://localhost:8000/cities`, {
       withCredentials: true,
     });
     return data;
@@ -16,7 +16,7 @@ const useCities = () => {
 
   const useCreateCity = async ({ city }) => {
     const { data } = await axios.post(
-      'http://localhost:8000/addCity',
+      'http://localhost:8000/cities',
       {
         city: city,
       },
@@ -38,7 +38,7 @@ const useCities = () => {
   });
 
   const useDeleteCity = async (cityId: number) => {
-    const { data } = await axios.delete(`http://localhost:8000/deleteCity/${cityId}`, {
+    const { data } = await axios.delete(`http://localhost:8000/cities/${cityId}`, {
       withCredentials: true,
     });
     return data;
@@ -58,7 +58,7 @@ const useCities = () => {
   });
 
   const getCityById = async (cityId: string) => {
-    const { data } = await axios.get(`http://localhost:8000/getCityById/${cityId}`, {
+    const { data } = await axios.get(`http://localhost:8000/cities/${cityId}`, {
       withCredentials: true,
     });
     return data;

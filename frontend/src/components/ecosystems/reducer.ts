@@ -26,7 +26,7 @@ const reducer = (state: TripsPlannerStateType, action: TripsPlannerActionsType) 
     case 'CLOSE_INFO_WINDOW':
       return {
         ...state,
-        attractionId: initialState.attractionId,
+        attractionId: initialState.id,
         photo: initialState.photo,
         website: initialState.website,
         attraction: initialState.attraction,

@@ -3,7 +3,7 @@ import { AttractionFormType } from '../../types';
 
 const useAttractionForm = () => {
   const [attractionForm, setAttractionForm] = useState<AttractionFormType>({
-    attractionId: undefined,
+    id: undefined,
     attraction: '',
   });
   const [isOpenDialog, setIsOpenDialog] = useState(false);

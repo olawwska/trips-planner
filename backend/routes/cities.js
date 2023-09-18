@@ -1,31 +1,37 @@
 const router = require('express').Router();
 const { isUserAuthenticated } = require('../middlewares/auth');
-const {
-  handleAddCity,
-  handleGetAllCities,
-  handleDeleteCity,
-  handleGetCityById,
-} = require('../databaseHandlers');
+const { City, Permission } = require('../db/models');
 
-router.post('/addCity', async (req, res) => {
-  const result = await handleAddCity(req);
-  res.send({ result });
+router.get('', isUserAuthenticated, async (req, res, next) => {
+  const { googleId } = req.user;
+  const permissions = await Permission.findAll(
+    { attributes: ['cityId'] },
+    { where: { googleId: googleId } }
+  );
+
+  const allCities = await Promise.all(permissions.map(async (p) => await City.findByPk(p.cityId)));
+  res.json(allCities);
 });
 
-router.get('/getAllCities', isUserAuthenticated, async (req, res) => {
-  const result = await handleGetAllCities(req);
-  res.send(result);
+router.post('', async (req, res, next) => {
+  const { city } = req.body;
+  const { googleId } = req.user;
+  const newCity = await City.create({ city });
+  await Permission.create({ cityId: newCity.id, googleId });
+  res.json(newCity);
 });
 
-router.delete('/deleteCity/:cityId', async (req, res) => {
-  const result = await handleDeleteCity(req);
-  res.send(result);
-});
-
-router.get('/getCityById/:cityId', async (req, res) => {
+router.get('/:cityId', async (req, res, next) => {
   const { cityId } = req.params;
-  const result = await handleGetCityById(cityId);
-  res.send(result);
+  const city = await City.findByPk(cityId);
+  res.json(city);
+});
+
+router.delete('/:cityId', async (req, res, next) => {
+  const { cityId } = req.params;
+  const city = await City.findByPk(cityId);
+  const removedCity = await city.destroy();
+  res.json({ message: 'City successfully removed', body: removedCity });
 });
 
 module.exports = router;

@@ -10,7 +10,7 @@ const DispatchContext = createContext<Dispatch | undefined>(undefined);
 
 export const initialState: TripsPlannerStateType = {
   attraction: '',
-  attractionId: 0,
+  id: 0,
   photo: '',
   website: '',
   isOpen: false,
