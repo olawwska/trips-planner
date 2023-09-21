@@ -17,7 +17,9 @@ to a page with list of cities you would like to visit.
 
 
 
-https://github.com/olawwska/trips-planner/assets/47668241/37d052ce-1dea-4d82-8c83-877dcd1da6c1
+
+https://github.com/olawwska/trips-planner/assets/47668241/1a0e8161-baa8-4108-ad09-e6d93ece3e99
+
 
 
 
@@ -28,7 +30,7 @@ After clicking on particular city you'll be redirected to the attractions view, 
 
 
 
-https://github.com/olawwska/trips-planner/assets/47668241/b158a47a-c91b-4984-a544-ed4449ae980f
+
 
 
 
