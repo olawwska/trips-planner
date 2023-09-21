@@ -47,6 +47,7 @@ Project is created with:
 * react-query: 3.39.3
 * react-router-dom: 6.11.2
 * express: 4.18.2
+* sequelize: 6.33.0
 * passport: 0.5.3
 * passport-google-oauth20: 2.0.0
 * sqlite3: 5.1.6
