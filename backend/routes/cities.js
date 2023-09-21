@@ -1,37 +1,14 @@
 const router = require('express').Router();
 const { isUserAuthenticated } = require('../middlewares/auth');
-const { City, Permission } = require('../db/models');
+const { db } = require('../helpers');
+const repository = require('../repository.js')(db);
 
-router.get('', isUserAuthenticated, async (req, res, next) => {
-  const { googleId } = req.user;
-  const permissions = await Permission.findAll(
-    { attributes: ['cityId'] },
-    { where: { googleId: googleId } }
-  );
+router.get('', isUserAuthenticated, repository.getCitiesByPermission);
 
-  const allCities = await Promise.all(permissions.map(async (p) => await City.findByPk(p.cityId)));
-  res.json(allCities);
-});
+router.post('', repository.createCity);
 
-router.post('', async (req, res, next) => {
-  const { city } = req.body;
-  const { googleId } = req.user;
-  const newCity = await City.create({ city });
-  await Permission.create({ cityId: newCity.id, googleId });
-  res.json(newCity);
-});
+router.get('/:cityId', repository.getCityById);
 
-router.get('/:cityId', async (req, res, next) => {
-  const { cityId } = req.params;
-  const city = await City.findByPk(cityId);
-  res.json(city);
-});
-
-router.delete('/:cityId', async (req, res, next) => {
-  const { cityId } = req.params;
-  const city = await City.findByPk(cityId);
-  const removedCity = await city.destroy();
-  res.json({ message: 'City successfully removed', body: removedCity });
-});
+router.delete('/:cityId', repository.deleteCity);
 
 module.exports = router;

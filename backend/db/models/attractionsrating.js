@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       rating: {
         allowNull: false,
-        type: DataTypes.INTEGER,
+        type: DataTypes.FLOAT,
       },
       googleId: {
         allowNull: false,
