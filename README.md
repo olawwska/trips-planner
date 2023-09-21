@@ -32,6 +32,10 @@ After clicking on particular city you'll be redirected to the attractions view, 
 
 
 
+https://github.com/olawwska/trips-planner/assets/47668241/4f4d70ae-1fc2-4d21-aff7-d0d6546762dc
+
+
+
 
 
 
