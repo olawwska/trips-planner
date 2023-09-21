@@ -17,7 +17,6 @@ router.get(
 );
 
 router.get('/user', isUserAuthenticated, (req, res) => {
-  console.log(req.user);
   res.json(req.user.userName);
 });
 module.exports = router;
