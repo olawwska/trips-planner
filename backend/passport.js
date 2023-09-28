@@ -10,10 +10,6 @@ passport.use(
       passReqToCallback: true,
     },
     (req, accessToken, refreshToken, profile, cb) => {
-      db_run(
-        `INSERT INTO users(userId,userEmail,userName) VALUES('${profile.id}','${profile.emails[0].value}','${profile.name.givenName}')`
-      );
-
       const user = {
         googleId: profile.id,
         userEmail: profile.emails[0].value,
