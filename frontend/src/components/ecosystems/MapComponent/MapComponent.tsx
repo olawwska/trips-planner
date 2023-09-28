@@ -148,7 +148,7 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
                 handleMarkerClick({ id, lat, lng, photo, attraction, website });
               }}
             >
-              {infoWindowData.isOpen && infoWindowData?.id === id && (
+              {infoWindowData.isOpen && infoWindowData?.attractionId === id && (
                 <InfoWindowF
                   onCloseClick={() => {
                     dispatch({ type: 'CLOSE_INFO_WINDOW' });

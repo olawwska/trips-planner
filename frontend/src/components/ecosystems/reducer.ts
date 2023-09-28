@@ -22,11 +22,10 @@ const reducer = (state: TripsPlannerStateType, action: TripsPlannerActionsType) 
         attraction: action.attraction,
         isOpen: action.isOpen,
       };
-
     case 'CLOSE_INFO_WINDOW':
       return {
         ...state,
-        attractionId: initialState.id,
+        attractionId: initialState.attractionId,
         photo: initialState.photo,
         website: initialState.website,
         attraction: initialState.attraction,

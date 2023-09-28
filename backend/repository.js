@@ -93,6 +93,8 @@ module.exports = () => {
         attraction: attractionPayload.attraction,
         lat: attractionPayload.lat,
         lng: attractionPayload.lng,
+        photo: attractionPayload?.photo,
+        website: attractionPayload?.website,
       });
       res.status(200).json({ message: 'Attraction created successfully', body: attraction });
     } catch (err) {

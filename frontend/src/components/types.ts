@@ -42,7 +42,7 @@ export interface IAttractionType extends IAttractionPayloadType {
 }
 
 export interface IInfoWindowDataType extends PlaceInfo {
-  id: number;
+  attractionId: number;
 }
 
 export type TripsPlannerActionsType =

@@ -13,19 +13,21 @@ const MapInfoWindow: FC<{ infoWindowData: IInfoWindowDataType }> = ({ infoWindow
         </Typography>
         <CardMedia sx={{ height: 140 }} image={infoWindowData?.photo} title="attraction" />
         <CardActions>
-          <Link
-            component="button"
-            underline="none"
-            variant="body2"
-            href={infoWindowData?.website}
-            onClick={() => {
-              if (infoWindowData?.website) {
-                window.location.href = infoWindowData?.website;
-              }
-            }}
-          >
-            Check website
-          </Link>
+          {infoWindowData.website && (
+            <Link
+              component="button"
+              underline="none"
+              variant="body2"
+              href={infoWindowData?.website}
+              onClick={() => {
+                if (infoWindowData?.website) {
+                  window.location.href = infoWindowData?.website;
+                }
+              }}
+            >
+              Check website
+            </Link>
+          )}
         </CardActions>
       </Card>
     </>
