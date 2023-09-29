@@ -133,11 +133,7 @@ const MapComponent: FC<{ selectedCity: CityType; attractions: IAttractionType[] 
         </Grid>
       ) : (
         <GoogleMap mapContainerClassName={classes.map} center={center} zoom={10} onLoad={onLoadMap}>
-          <Autocomplete
-            onLoad={onLoad}
-            //@ts-ignore
-            onPlaceChanged={(attraction: string) => onAttractionChange(attraction)}
-          >
+          <Autocomplete onLoad={onLoad} onPlaceChanged={onAttractionChange}>
             <TextFieldPlace setInputVal={setInputVal} inputVal={inputVal} mapTextField />
           </Autocomplete>
           {attractions.map(({ lat, lng, id, photo, attraction, website }) => (
